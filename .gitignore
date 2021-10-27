@@ -1,5 +1,7 @@
 # csv excel
 *.csv
+
+# Ignore All (xlsx) files
 *.xlsx
 
 # Byte-compiled / optimized / DLL files

@@ -134,7 +134,7 @@ if __name__ == '__main__':
                                     scale=True, pca_var=VAR)
 
     ##################
-    f,ax = plt.subplots(figsize=(20, 5))
+    f,ax = plt.subplots(figsize=(15, 3))
     plt.plot(df['target_date'], df['target'],'x-', color='#138D75', label='actual')
     plt.plot(df_test_all['target_date'], df_test_all['predict'], 'x-', color='#8E44AD', label='predict' )
     for _, (fold_date, _) in test_fold.items():
