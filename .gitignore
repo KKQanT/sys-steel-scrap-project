@@ -1,8 +1,6 @@
-# csv excel
-*.csv
-
-# Ignore All (xlsx) files
-*.xlsx
+# Ignore important data
+data/sys/
+data/preprocessed/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

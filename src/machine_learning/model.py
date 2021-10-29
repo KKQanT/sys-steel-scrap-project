@@ -35,8 +35,10 @@ def perform_pcr(df_main_features, features, test_min_date, test_max_date,
     df_test['predict'] = test_pred.copy()
     
     #print(mean_absolute_percentage_error(df_test['target'], df_test['predict']))
-    
-    return df_train, df_test
+    if pca_var:
+        return df_train, df_test, model, pca, scaler
+    else:
+        return df_train, df_test, model
 
 def get_pca_component(X, pca_variance):
     pca = PCA()
