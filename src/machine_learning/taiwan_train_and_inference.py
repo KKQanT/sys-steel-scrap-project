@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-import pandas_ta as pta
+import pickle
 
 from validation import get_val_test_date, walking_forward_fold
 from timeseries_features_engineering import *
@@ -14,9 +14,12 @@ if __name__ == '__main__':
     SPLIT_PCT = 20
     WINDOW = 24
 
-    THRESHOLD = 0.6
+    THRESHOLD = 0.7
     STD = 0.1
-    VAR = 0.97
+    VAR = 0.95
+
+    SAVE_MODEL_PATH = '../../model/machine_learning/experiment/'
+
 
     df = pd.read_csv(TAIWAN_PREP_PATH)
     df['date'] = pd.to_datetime(df['date'])
@@ -107,7 +110,7 @@ if __name__ == '__main__':
 
     df_test_all = pd.DataFrame()
     for fold, (test_min_date, test_max_date) in test_fold.items():
-        df_train, df_test = perform_pcr(df_main_features, highest_corr_features, test_min_date, test_max_date,
+        df_train, df_test, _, _, _ = perform_pcr(df_main_features, highest_corr_features, test_min_date, test_max_date,
                                     scale=True, pca_var=VAR)
         df_test_all = df_test_all.append(df_test,  ignore_index=True)
 
@@ -125,7 +128,7 @@ if __name__ == '__main__':
     df_test_all.loc[df_test_all['Container Taiwan'] < df_test_all['predict'], 'predicted_label'] = 1
     df_test_all.loc[df_test_all['Container Taiwan'] >= df_test_all['predict'], 'predicted_label'] = 0
 
-    df_train, df_test = perform_pcr(df_main_features, highest_corr_features, 
+    df_train, df_test, model, pca, scaler = perform_pcr(df_main_features, highest_corr_features, 
                                     pd.to_datetime(external_test_date), 
                                     df['target_date'].max(),
                                     scale=True, pca_var=VAR)
@@ -141,6 +144,18 @@ if __name__ == '__main__':
     #test_acc = accuracy_score(df_test['label'], df_test['predicted_label'])
     #test_f1 = f1_score(df_test['label'], df_test['predicted_label'])
     df_test_external = df_test[['target_date','target', 'predict','label','predicted_label']].dropna()
+
+    with open(SAVE_MODEL_PATH + 'taiwan_regression.pkl', 'wb') as model_file:
+        pickle.dump(model, model_file)
+
+    with open(SAVE_MODEL_PATH + 'taiwan_pca.pkl', 'wb') as pca_file:
+        pickle.dump(pca, pca_file)
+
+    with open(SAVE_MODEL_PATH + 'taiwan_highest_corr_features.pkl', 'wb') as highest_corr_features_file:
+        pickle.dump(highest_corr_features, highest_corr_features_file)
+
+    with open(SAVE_MODEL_PATH + 'taiwan_scaler.pkl', 'wb') as scaler_file:
+        pickle.dump(scaler, scaler_file)
 
     f,ax = plt.subplots(figsize=(15, 5))
     plt.plot(df['target_date'], df['target'],'x-', color='#138D75', label='actual')

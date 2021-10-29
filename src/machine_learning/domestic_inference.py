@@ -101,7 +101,7 @@ if __name__ == '__main__':
     prediction = model.predict(X_infer)
     df_main_features['prediction'] = prediction
 
-    f,ax = plt.subplots(figsize=(40, 10))
+    f,ax = plt.subplots(figsize=(13, 5))
     plt.plot(df_main_features['target_date'], df_main_features['target'],'x-', color='#138D75', label='actual')
     plt.plot(df_main_features['target_date'], df_main_features['prediction'], 'x-', color='#8E44AD', label='predict' )
 
@@ -113,5 +113,7 @@ if __name__ == '__main__':
     df = df.drop(columns = ['date', 'target'])
 
     df.to_csv(SVAE_FILE_PATH + 'd_ML.csv', index=False)
+
+    plt.show()
         
 

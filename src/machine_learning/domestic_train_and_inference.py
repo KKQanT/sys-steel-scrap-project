@@ -3,6 +3,7 @@ import re
 import ast
 import matplotlib
 import matplotlib.pyplot as plt
+import pickle
 
 import pandas_ta as pta
 
@@ -11,17 +12,23 @@ from timeseries_features_engineering import *
 from features_selection import selected_highest_corr
 from model import perform_pcr
 
+class NullTestSet(Exception):
+    pass
+
 if __name__ == '__main__':
 
     matplotlib.rc('font', **{'size':15})
 
     DOMESTIC_PREP_PATH = '../../data/preprocessed/domestic_prep.csv'
-    SPLIT_PCT = 10
+    SPLIT_PCT = 20
     WINDOW = 24
 
-    THRESHOLD = 0.6
-    STD = 0.2
+    THRESHOLD = 0.7
+    STD = 0.1
     VAR = 0.97
+
+    SAVE_MODEL_PATH = '../../model/machine_learning/experiment/'
+
 
     df = pd.read_csv(DOMESTIC_PREP_PATH)
     df['date'] = pd.to_datetime(df['date'])
@@ -124,14 +131,32 @@ if __name__ == '__main__':
 
     df_test_all = pd.DataFrame()
     for fold, (test_min_date, test_max_date) in test_fold.items():
-        df_train, df_test = perform_pcr(df_main_features, highest_corr_features, test_min_date, test_max_date,
+        try:
+            df_train, df_test, _, _, _ = perform_pcr(df_main_features, highest_corr_features, test_min_date, test_max_date,
                                     scale=True, pca_var=VAR)
-        df_test_all = df_test_all.append(df_test,  ignore_index=True)
+            df_test_all = df_test_all.append(df_test,  ignore_index=True)
+        except NullTestSet:
+            continue
 
-    df_train, df_test = perform_pcr(df_main_features, highest_corr_features, 
+    df_train, df_test, model, pca, scaler = perform_pcr(df_main_features, highest_corr_features, 
                                     pd.to_datetime(external_test_date), 
                                     df['target_date'].max(),
                                     scale=True, pca_var=VAR)
+
+    with open(SAVE_MODEL_PATH + 'domestic_regression.pkl', 'wb') as model_file:
+        pickle.dump(model, model_file)
+
+    with open(SAVE_MODEL_PATH + 'domestic_pca.pkl', 'wb') as pca_file:
+        pickle.dump(pca, pca_file)
+
+    with open(SAVE_MODEL_PATH + 'domestic_selected_paired_base_features.pkl', 'wb') as selected_paired_base_features_file:
+        pickle.dump(selected_paired_base_features, selected_paired_base_features_file)
+
+    with open(SAVE_MODEL_PATH + 'domestic_highest_corr_features.pkl', 'wb') as highest_corr_features_file:
+        pickle.dump(highest_corr_features, highest_corr_features_file)
+
+    with open(SAVE_MODEL_PATH + 'domestic_scaler.pkl', 'wb') as scaler_file:
+        pickle.dump(scaler, scaler_file)
 
     ##################
     f,ax = plt.subplots(figsize=(15, 3))
