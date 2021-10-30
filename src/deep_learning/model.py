@@ -68,6 +68,67 @@ def build_transformerv1_model(input_shape, head_size, num_heads, ff_dim,
   outputs = L.Dense(1, activation='linear')(x)
   return Model(inputs, outputs)
 
+def build_bidirectional_gru(input_shape, n_units, go_backwards_list, 
+middle_dense_dim=None, dropout=None, kernel_initializer='glorot_uniform'):
+  model = Sequential()
+  
+  for i, (n_unit, go_backwards) in enumerate(zip(n_units, go_backwards_list)):
+    if len(n_units) == 1:
+      model.add(
+          L.Bidirectional(L.GRU(n_unit, 
+                      go_backwards=go_backwards,
+                      kernel_initializer=kernel_initializer
+                      ),
+                      input_shape=input_shape,)
+      )
+    else:
+      if i == 0:
+        model.add(
+            L.Bidirectional(L.GRU(n_unit, 
+                        go_backwards=go_backwards, 
+                        return_sequences = True,
+                        kernel_initializer=kernel_initializer
+                        ),
+                        input_shape=input_shape,)
+        )
+      elif i == len(n_units) - 1:
+        model.add(
+            L.Bidirectional(L.GRU(n_unit, 
+                        go_backwards=go_backwards, 
+                        return_sequences = False,
+                        kernel_initializer=kernel_initializer
+                        ))
+        )
+
+      else:
+        model.add(
+            L.Bidirectional(L.GRU(n_unit, 
+                        go_backwards=go_backwards, 
+                        return_sequences = True,
+                        kernel_initializer=kernel_initializer
+                        ))
+        )
+  
+  if middle_dense_dim:
+    model.add(
+        L.Dense(middle_dense_dim,
+                activation = 'relu',
+                kernel_initializer=kernel_initializer)
+    )
+
+  if dropout:
+    model.add(
+        L.Dropout(dropout)
+    )
+  
+  model.add(
+      L.Dense(1, activation='linear', kernel_initializer=kernel_initializer)
+  )
+
+  model.summary()
+
+  return model
+
 def train_model(X_train, y_train, X_val, y_val, model, model_name, epochs, batch_size, save_path):
   def lr_scheduler(epoch, lr, warmup_epochs=epochs//5, decay_epochs=epochs*2//3, initial_lr=1e-6, base_lr=1e-3, min_lr=5e-5):
     if epoch <= warmup_epochs:

@@ -85,3 +85,13 @@ def windowlized(df, cols, val_date, test_date, valid_target_date, window):
   df_test = df_valid[df_valid['target_date'] >= test_date].reset_index(drop=True)
 
   return  (df_train, df_val, df_test), (X_train, y_train), (X_val, y_val), (X_test, y_test), (scaler_X, scaler_y)
+
+def window_sliding_X(X, idxs, window):
+  X_windows = []
+  for i in idxs:
+    X_t = X[i-window:i].copy()
+    X_windows.append(X_t)
+    
+  X_windows = np.array(X_windows)
+
+  return X_windows

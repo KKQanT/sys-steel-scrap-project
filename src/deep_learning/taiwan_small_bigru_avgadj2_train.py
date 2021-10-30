@@ -1,38 +1,47 @@
+import pandas as pd
+import datetime as dt
+import pickle
+import tensorflow as tf
+import numpy as np
+
+from sklearn.metrics import mean_absolute_percentage_error
+import matplotlib
+import matplotlib.pyplot as plt
+
+from util import make_weight_avg, windowlized
+from validation import get_valid_target_date, get_val_test_date
+from model import build_bidirectional_gru, train_model
+
+
 
 if __name__ == "__main__":
-
-    PREP_DATA_PATH = 'gdrive/MyDrive/SYS_deployment/data/preprocessed_data/domestic_transformerv1_avgsel.csv'
-
+    TAIWAN_PREP_PATH = '../../data/preprocessed/taiwan_small_bigru_avgadj2_prep.csv'
     SPLIT_PCT = 20
 
-    MODEL_NAME = 'transformerv1_avgsel'
-    BASE_FEATURES = ['adjusted_avg_selected_manualy']
-    WINDOW = 168
-    HEAD_SIZE = 256
-    NUM_HEADS = 4
-    FF_DIM = 4
-    NUM_TRANSFORMER_BLOCKS = 4
-    MLP_UNITS = [32]
-    DROPOUT = 0.2
-    MLP_DROPOUT = 0.4
-    #SEED = 3
-    SEED = 4
+    MODEL_NAME = 'taiwan_small_bigru_avgadj2'
+    BASE_FEATURES = ['adjusted_avg_factors2']
+    SEED = 10
+    WINDOW = 84
+    N_UNITS = [4, 4]
+    go_backwards_list = [False for item in N_UNITS]
+    MIDDLE_DENSE_DIM = None
+    DROPOUT = 0
 
-    SAVE_MODEL_PATH = 'gdrive/MyDrive/SYS_deployment/model/DL/domestic/'
+    SAVE_MODEL_PATH = '../../model/deep_learning/experiment'
 
-    df = pd.read_csv(PREP_DATA_PATH)
-    df['date'] = pd.to_datetime(df['date'])
-    df['target_date'] = pd.to_datetime(df['target_date'])
-
-    val_date, test_date = get_val_test_date(PREP_DATA_PATH, SPLIT_PCT)
+    val_date, test_date = get_val_test_date(TAIWAN_PREP_PATH, SPLIT_PCT)
 
     with open(SAVE_MODEL_PATH + f'{MODEL_NAME}_val_date.pkl', 'w') as val_date_file:
       val_date_file.write(val_date.strftime("%d-%b-%Y (%H:%M:%S.%f)"))
     
-    valid_target_date = get_valid_target_date(PREP_DATA_PATH)
+    valid_target_date = get_valid_target_date(TAIWAN_PREP_PATH)
 
-    selected_manualy = ['000932.SZ', '601899.SS','AH.BK', '600019.SS', 'MT', 'steel_scrap_lme']
-    df = make_weight_avg(df, selected_manualy, val_date - dt.timedelta(7*4*3), name='adjusted_avg_selected_manualy')
+    adjusted_avg_factors2 = ['^TWII', 'TSM', 'SCHN', 'X', 'steel_scrap_lme']
+
+    df = pd.read_csv(TAIWAN_PREP_PATH)
+    df['date'] = pd.to_datetime(df['date'])
+    df['target_date'] = pd.to_datetime(df['target_date'])
+    df = make_weight_avg(df, adjusted_avg_factors2, val_date - dt.timedelta(7*4*3), name='adjusted_avg_factors2')
 
     (df_train, df_val, df_test), (X_train, y_train), (X_val, y_val), (X_test, y_test), (scaler_X, scaler_y) = windowlized(df, BASE_FEATURES, val_date, test_date, valid_target_date, WINDOW)
 
@@ -43,22 +52,17 @@ if __name__ == "__main__":
       pickle.dump(scaler_y, scaler_y_file)
 
     tf.random.set_seed(SEED)
-    model = build_transformerv1_model(
-          input_shape = (WINDOW, len(BASE_FEATURES)),
-          head_size=HEAD_SIZE,
-          num_heads=NUM_HEADS,
-          ff_dim=FF_DIM,
-          num_transformer_blocks=NUM_TRANSFORMER_BLOCKS,
-          mlp_units=MLP_UNITS,
-          dropout=DROPOUT,
-          mlp_dropout=MLP_DROPOUT
-      )
+    model = build_bidirectional_gru(input_shape=(WINDOW, len(BASE_FEATURES)),
+                        n_units=N_UNITS,
+                        go_backwards_list=go_backwards_list,
+                        middle_dense_dim=MIDDLE_DENSE_DIM,
+                        dropout=DROPOUT,)
 
     model.summary()
 
-    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=500, batch_size=32, save_path=SAVE_MODEL_PATH)
+    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=300, batch_size=32, save_path=SAVE_MODEL_PATH)
 
-    model = tf.keras.models.load_model(SAVE_MODEL_PATH+f'{MODEL_NAME}.h5', custom_objects={'MultiHeadAttention':MultiHeadAttention})
+    model = tf.keras.models.load_model(SAVE_MODEL_PATH+f'{MODEL_NAME}.h5')
 
     val_predict = model.predict(X_val)
 
@@ -91,5 +95,3 @@ if __name__ == "__main__":
     plt.legend()
     plt.axvline(val_date, linestyle='dashed', color='#21618C')
     plt.axvline(test_date, linestyle='dashed', color='#8E44AD')
-
-    
