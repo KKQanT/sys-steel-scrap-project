@@ -20,14 +20,14 @@ if __name__ == "__main__":
 
     MODEL_NAME = 'taiwan_small_bigru_avgadj2'
     BASE_FEATURES = ['adjusted_avg_factors2']
-    SEED = 10
+    SEED = 0
     WINDOW = 84
     N_UNITS = [4, 4]
     go_backwards_list = [False for item in N_UNITS]
     MIDDLE_DENSE_DIM = None
     DROPOUT = 0
 
-    SAVE_MODEL_PATH = '../../model/deep_learning/experiment'
+    SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
 
     val_date, test_date = get_val_test_date(TAIWAN_PREP_PATH, SPLIT_PCT)
 
@@ -81,9 +81,9 @@ if __name__ == "__main__":
     val_mape = np.round(mean_absolute_percentage_error(df_val['target'], df_val['predict'])*100, decimals=1)
     test_mape = np.round(mean_absolute_percentage_error(df_test['target'], df_test['predict'])*100, decimals=1)
 
-    matplotlib.rc('font', **{'size':30})
+    matplotlib.rc('font', **{'size':15})
 
-    f,ax = plt.subplots(figsize=(40, 10))
+    f,ax = plt.subplots(figsize=(12, 4))
     plt.plot(df_train['target_date'], df_train['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
     plt.plot(df_train['target_date'], df_train['predict'], 'x-', color=color,  linewidth=1, alpha=0.3)
 
@@ -95,3 +95,4 @@ if __name__ == "__main__":
     plt.legend()
     plt.axvline(val_date, linestyle='dashed', color='#21618C')
     plt.axvline(test_date, linestyle='dashed', color='#8E44AD')
+    plt.show()

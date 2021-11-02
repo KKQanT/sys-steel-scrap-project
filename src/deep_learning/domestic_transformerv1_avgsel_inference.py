@@ -56,7 +56,7 @@ if __name__ == '__main__':
     df_infer['predict'] = y_predict
 
     matplotlib.rc('font', **{'size':15})
-    f,ax = plt.subplots(figsize=(13, 5))
+    f,ax = plt.subplots(figsize=(12, 4))
     plt.plot(df_infer['target_date'], df_infer['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
     plt.plot(df_infer['target_date'], df_infer['predict'], 'x-', color='#7D3C98', label='predict', linewidth=3)  
     plt.legend()
