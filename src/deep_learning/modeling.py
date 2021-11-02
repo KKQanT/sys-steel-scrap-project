@@ -129,7 +129,7 @@ middle_dense_dim=None, dropout=None, kernel_initializer='glorot_uniform'):
 
   return model
 
-def train_model(X_train, y_train, X_val, y_val, model, model_name, epochs, batch_size, save_path):
+def train_model(X_train, y_train, X_val, y_val, model, model_name, epochs, batch_size, save_path, save_best_only=False):
   def lr_scheduler(epoch, lr, warmup_epochs=epochs//5, decay_epochs=epochs*2//3, initial_lr=1e-6, base_lr=1e-3, min_lr=5e-5):
     if epoch <= warmup_epochs:
         pct = epoch / warmup_epochs
@@ -145,7 +145,7 @@ def train_model(X_train, y_train, X_val, y_val, model, model_name, epochs, batch
 
   checkpoint = ModelCheckpoint(save_path + f'{model_name}.h5', 
                                     monitor='val_loss',
-                                    save_best_only=False)
+                                    save_best_only=save_best_only)
   
   learningrate_scheduler = LearningRateScheduler(lr_scheduler)
   early_stop = EarlyStopping(monitor='val_loss', min_delta=0, patience=30, verbose=0,)

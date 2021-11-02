@@ -1,38 +1,33 @@
-import numpy as np
 import pandas as pd
-import datetime as dt
-import tensorflow as tf
 import pickle
-from sklearn.metrics import mean_absolute_percentage_error
-import matplotlib.pyplot as plt
+import tensorflow as tf
 import matplotlib
-
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.metrics import mean_absolute_percentage_error
+import datetime as dt
 
 from validation import get_val_test_date, get_valid_target_date
 from util import make_weight_avg, windowlized
-from modeling import build_transformerv1_model, train_model
+from modeling import build_bidirectional_gru, train_model
 
-from tensorflow_addons.layers import MultiHeadAttention
 
 
 if __name__ == "__main__":
-
-    PREP_DATA_PATH = '../../data/preprocessed/domestic_transformerv1_avgsel.csv'
+    
+    PREP_DATA_PATH = '../../data/preprocessed/domestic_bigru_avg.csv'
 
     SPLIT_PCT = 20
 
-    MODEL_NAME = 'domestic_transformerv1_avgsel'
-    BASE_FEATURES = ['adjusted_avg_selected_manualy']
     WINDOW = 168
-    HEAD_SIZE = 256
-    NUM_HEADS = 4
-    FF_DIM = 4
-    NUM_TRANSFORMER_BLOCKS = 4
-    MLP_UNITS = [32]
-    DROPOUT = 0.2
-    MLP_DROPOUT = 0.4
-    #SEED = 3
-    SEED = 4
+
+    MODEL_NAME = 'domestic_bigru_avg'
+    BASE_FEATURES = ['adjusted_avg_factors']
+    N_UNITS = [8, 8]
+    MIDDLE_DENSE_DIM = None
+    DROPOUT = 0
+
+    SEED = 0
 
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
 
@@ -47,8 +42,8 @@ if __name__ == "__main__":
     
     valid_target_date = get_valid_target_date(PREP_DATA_PATH)
 
-    selected_manualy = ['000932.SZ', '601899.SS','AH.BK', '600019.SS', 'MT', 'steel_scrap_lme']
-    df = make_weight_avg(df, selected_manualy, val_date - dt.timedelta(7*4*3), name='adjusted_avg_selected_manualy')
+    avg_factors = ['000932.SZ', '601899.SS','AH.BK', '600019.SS', '000333.SZ']
+    df = make_weight_avg(df, avg_factors, val_date - dt.timedelta(7*4*3), name='adjusted_avg_factors')
 
     (df_train, df_val, df_test), (X_train, y_train), (X_val, y_val), (X_test, y_test), (scaler_X, scaler_y) = windowlized(df, BASE_FEATURES, val_date, test_date, valid_target_date, WINDOW)
 
@@ -59,22 +54,18 @@ if __name__ == "__main__":
       pickle.dump(scaler_y, scaler_y_file)
 
     tf.random.set_seed(SEED)
-    model = build_transformerv1_model(
-          input_shape = (WINDOW, len(BASE_FEATURES)),
-          head_size=HEAD_SIZE,
-          num_heads=NUM_HEADS,
-          ff_dim=FF_DIM,
-          num_transformer_blocks=NUM_TRANSFORMER_BLOCKS,
-          mlp_units=MLP_UNITS,
-          dropout=DROPOUT,
-          mlp_dropout=MLP_DROPOUT
-      )
+    go_backwards_list = [False for item in N_UNITS]
+    model = build_bidirectional_gru(input_shape=(WINDOW, len(BASE_FEATURES)),
+                        n_units=N_UNITS,
+                        go_backwards_list=go_backwards_list,
+                        middle_dense_dim=MIDDLE_DENSE_DIM,
+                        dropout=DROPOUT,)
 
     model.summary()
 
-    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=500, batch_size=32, save_path=SAVE_MODEL_PATH)
+    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=300, batch_size=32, save_path=SAVE_MODEL_PATH)
 
-    model = tf.keras.models.load_model(SAVE_MODEL_PATH+f'{MODEL_NAME}.h5', custom_objects={'MultiHeadAttention':MultiHeadAttention})
+    model = tf.keras.models.load_model(SAVE_MODEL_PATH+f'{MODEL_NAME}.h5')
 
     val_predict = model.predict(X_val)
 
@@ -95,7 +86,7 @@ if __name__ == "__main__":
 
     matplotlib.rc('font', **{'size':30})
 
-    f,ax = plt.subplots(figsize=(40, 10))
+    f,ax = plt.subplots(figsize=(13, 5))
     plt.plot(df_train['target_date'], df_train['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
     plt.plot(df_train['target_date'], df_train['predict'], 'x-', color=color,  linewidth=1, alpha=0.3)
 
@@ -108,6 +99,3 @@ if __name__ == "__main__":
     plt.axvline(val_date, linestyle='dashed', color='#21618C')
     plt.axvline(test_date, linestyle='dashed', color='#8E44AD')
     plt.show()
-
-
-    

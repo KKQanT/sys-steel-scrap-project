@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 from util import make_weight_avg, windowlized
 from validation import get_valid_target_date, get_val_test_date
-from model import build_bidirectional_gru, train_model
+from modeling import build_bidirectional_gru, train_model
 
 
 
