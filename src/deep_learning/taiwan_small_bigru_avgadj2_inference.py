@@ -15,7 +15,7 @@ if __name__ == "__main__":
     MODEL_NAME = 'taiwan_small_bigru_avgadj2'
     BASE_FEATURES = ['adjusted_avg_factors2']
     WINDOW = 84
-    SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
+    SAVE_MODEL_PATH = '../../model/deep_learning/executing/'
     SAVE_PREDICTION_PATH = '../../output/'
 
     with open(SAVE_MODEL_PATH + f'{MODEL_NAME}_val_date.pkl', 'r') as val_date_file:
