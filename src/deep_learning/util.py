@@ -6,16 +6,6 @@ import datetime as dt
 
 from sklearn.preprocessing import MinMaxScaler
 
-import tensorflow as tf
-from tensorflow.keras.utils import Sequence
-from tensorflow.keras.models import Model, Sequential
-import tensorflow.keras.layers as L
-import tensorflow.keras.backend as K
-from tensorflow.keras.losses import MeanSquaredError
-from tensorflow.keras.optimizers import Adam, RMSprop
-from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler, CSVLogger, EarlyStopping
-
-from sklearn.metrics import mean_absolute_percentage_error, accuracy_score, f1_score, mean_squared_error
 
 import logging, os
 logging.disable(logging.WARNING)

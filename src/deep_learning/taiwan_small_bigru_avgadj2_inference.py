@@ -12,10 +12,10 @@ from util import make_weight_avg, window_sliding_X
 if __name__ == "__main__":
     TAIWAN_PREP_PATH = '../../data/preprocessed/taiwan_small_bigru_avgadj2_prep.csv'
     SPLIT_PCT = 20
-    MODEL_NAME = 'small_bigru_avgadj2'
+    MODEL_NAME = 'taiwan_small_bigru_avgadj2'
     BASE_FEATURES = ['adjusted_avg_factors2']
     WINDOW = 84
-    SAVE_MODEL_PATH = '../../model/deep_learning/experiment'
+    SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
     SAVE_PREDICTION_PATH = '../../output/'
 
     with open(SAVE_MODEL_PATH + f'{MODEL_NAME}_val_date.pkl', 'r') as val_date_file:
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     df_infer['predict'] = y_predict
 
     matplotlib.rc('font', **{'size':30})
-    f,ax = plt.subplots(figsize=(40, 10))
+    f,ax = plt.subplots(figsize=(13, 5))
     plt.plot(df_valid['target_date'], df_valid['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
     plt.plot(df_infer['target_date'], df_infer['predict'], 'x-', color='#7D3C98', label='predict', linewidth=3)  
     plt.legend()
@@ -65,3 +65,4 @@ if __name__ == "__main__":
     })
 
     df_infer.to_csv(SAVE_PREDICTION_PATH + 't_DL1.csv', index=False)
+    plt.show()
