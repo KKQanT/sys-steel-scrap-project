@@ -1,3 +1,6 @@
+# jupyter notebook
+*.ipynb
+
 # Ignore important data
 data/sys/
 data/preprocessed/
