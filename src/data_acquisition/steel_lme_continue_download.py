@@ -70,4 +70,5 @@ if __name__ == "__main__":
     df = pd.concat((df_old, df_stooq), axis=0, ignore_index=True)
     df = df.sort_values('Date', ascending=True).drop_duplicates(keep='first', subset=['Date']).reset_index(drop=True)
     df.to_csv(SAVE_PATH + 'SteelScrapLME.csv', index=False)
+    driver.close()
     
