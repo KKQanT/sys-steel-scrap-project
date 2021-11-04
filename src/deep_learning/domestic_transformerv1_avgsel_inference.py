@@ -55,7 +55,7 @@ if __name__ == '__main__':
     y_predict = scaler_y.inverse_transform(y_predict)
     df_infer['predict'] = y_predict
 
-    matplotlib.rc('font', **{'size':15})
+    matplotlib.rc('font', **{'size':10})
     f,ax = plt.subplots(figsize=(12, 4))
     plt.plot(df_infer['target_date'], df_infer['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
     plt.plot(df_infer['target_date'], df_infer['predict'], 'x-', color='#7D3C98', label='predict', linewidth=3)  
@@ -63,11 +63,12 @@ if __name__ == '__main__':
 
     features = [col for col in df_infer.columns.tolist() if col not in ['date', 'target_date', 'target', 'predict']]
     for col in features:
-      df_infer = df_infer.rename(columns = {col : f'd_DL1_{col}'})
-
-    df_infer = df_infer.rename(columns = {
-    'target':'d_target', 'predict':'d_DL1' 
-        })
+      df_infer = df_infer.rename(columns = {col : f'd_DL1_month3_{col}'})
+    
+    infer_date = df_infer.loc[df_infer['target'].isna() == False]['target_date'].max()
+    df_infer.loc[df_infer['target_date'] > infer_date, 'd_DL1_month3_pred'] = df_infer['predict']
+    df_infer.loc[df_infer['target_date'] <= infer_date, 'd_DL1_month3'] = df_infer['predict']
+    df_infer = df_infer.drop(columns=['predict', 'target','target_date'])
 
     df_infer.to_csv(SAVE_PREDICTION_PATH + 'd_DL1.csv', index=False)
 

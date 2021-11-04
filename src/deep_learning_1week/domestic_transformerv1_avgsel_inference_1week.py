@@ -10,9 +10,9 @@ import matplotlib.pyplot as plt
 from util import make_weight_avg, window_sliding_X
 
 if __name__ == "__main__":
-    PREP_DATA_PATH = '../../data/preprocessed/domestic_prep_1week.cs'
+    PREP_DATA_PATH = '../../data/preprocessed/domestic_transformerv1_avgsel_1week.csv'
     MODEL_NAME = 'domestic_transformerv1_avgsel_1week'
-    SAVE_MODEL_PATH = 'gdrive/MyDrive/SYS_deployment/model/DL/domestic/'
+    SAVE_MODEL_PATH = '../../model/deep_learning/executing/'
     BASE_FEATURES = ['adjusted_avg_selected_manualy']
     WINDOW = 168
     SAVE_PREDICTION_PATH = '../../output/'
@@ -49,8 +49,8 @@ if __name__ == "__main__":
     y_predict = scaler_y.inverse_transform(y_predict)
     df_infer['predict'] = y_predict
 
-    matplotlib.rc('font', **{'size':30})
-    f,ax = plt.subplots(figsize=(15, 5))
+    matplotlib.rc('font', **{'size':10})
+    f,ax = plt.subplots(figsize=(12, 4))
     plt.plot(df_infer['target_date'], df_infer['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
     plt.plot(df_infer['target_date'], df_infer['predict'], 'x-', color='#7D3C98', label='predict', linewidth=3)  
     plt.legend()
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     features = [col for col in df_infer.columns.tolist() if col not in ['date', 'target_date', 'target', 'predict']]
     for col in features:
       df_infer = df_infer.rename(columns = {col : f'd_DL1_week1_{col}'})
-
+    
     infer_date = df_infer.loc[df_infer['target'].isna() == False]['target_date'].max()
     df_infer.loc[df_infer['target_date'] > infer_date, 'd_DL1_week1_pred'] = df_infer['predict']
     df_infer.loc[df_infer['target_date'] <= infer_date, 'd_DL1_week1'] = df_infer['predict']

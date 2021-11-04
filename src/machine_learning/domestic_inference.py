@@ -108,9 +108,13 @@ if __name__ == '__main__':
     df = pd.merge(df, df_main_features[['target_date', 'prediction']], on = ['target_date'], how='left')
     features = [col for col in df.columns if col not in ['date', 'target_date', 'target', 'prediction']]
     for col in features:
-      df = df.rename(columns = {col : f'd_ML_{col}'})
-    df = df.rename(columns = {'prediction':'d_ML'})
-    df = df.drop(columns = ['date', 'target'])
+      df = df.rename(columns = {col : f'd_ML_month3_{col}'})
+    
+    infer_date = df.loc[df['target'].isna() == False]['target_date'].max()
+    df.loc[df['target_date'] > infer_date, 'd_ML_month3_pred'] = df['prediction']
+    df.loc[df['target_date'] <= infer_date, 'd_ML_month3'] = df['prediction']
+    df = df.rename(columns = {'target':'d_target'})
+    df = df.drop(columns = ['prediction'])
 
     df.to_csv(SVAE_FILE_PATH + 'd_ML.csv', index=False)
 
