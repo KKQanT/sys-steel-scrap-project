@@ -70,6 +70,6 @@ if __name__ == '__main__':
     df_infer.loc[df_infer['target_date'] <= infer_date, 'd_DL1_month3'] = df_infer['predict']
     df_infer = df_infer.drop(columns=['predict', 'target','target_date'])
 
-    df_infer.to_csv(SAVE_PREDICTION_PATH + 'd_DL1.csv', index=False)
+    df_infer.to_csv(SAVE_PREDICTION_PATH + 'd_DL1_month3.csv', index=False)
 
     plt.show()
