@@ -5,6 +5,7 @@ import tensorflow as tf
 
 import matplotlib
 import matplotlib.pyplot as plt
+from deep_learning.domestic_baseline_gru_avg_inference import PLOT
 
 from util import make_weight_avg, window_sliding_X
 
@@ -15,6 +16,7 @@ if __name__ == "__main__":
     BASE_FEATURES = ['adjusted_avg_factors']
     WINDOW = 168
     SAVE_PREDICTION_PATH = '../../output/'
+    PLOT = False
 
     with open(SAVE_MODEL_PATH + f'{MODEL_NAME}_val_date.pkl', 'r') as val_date_file:
         val_date = dt.datetime.strptime(val_date_file.read(), "%d-%b-%Y (%H:%M:%S.%f)")
@@ -65,4 +67,5 @@ if __name__ == "__main__":
 
     df_infer.to_csv(SAVE_PREDICTION_PATH + 't_DL2_month3.csv', index=False)
 
-    plt.show()
+    if PLOT:
+      plt.show()

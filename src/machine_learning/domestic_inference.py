@@ -18,6 +18,7 @@ if __name__ == '__main__':
     WINDOW = 24
     SAVE_MODEL_PATH = '../../model/machine_learning/executing/'
     SVAE_FILE_PATH = '../../output/'
+    PLOT = False
 
     df = pd.read_csv(DOMESTIC_PREP_PATH)
     df['date'] = pd.to_datetime(df['date'])
@@ -118,6 +119,7 @@ if __name__ == '__main__':
 
     df.to_csv(SVAE_FILE_PATH + 'd_ML.csv', index=False)
 
-    plt.show()
+    if PLOT == True:
+      plt.show()
         
 

@@ -28,6 +28,7 @@ if __name__ == '__main__':
     WINDOW = 24
     SAVE_MODEL_PATH = '../../model/machine_learning/executing/'
     SAVE_FILE_PATH = '../../output/'
+    PLOT = False
 
     df = pd.read_csv(TAIWAN_PREP_PATH)
     df['date'] = pd.to_datetime(df['date'])
@@ -117,5 +118,5 @@ if __name__ == '__main__':
     df = df.drop(columns = ['prediction'])
 
     df.to_csv(SAVE_FILE_PATH + 't_ML.csv', index=False)
-
-    plt.show()
+    if PLOT == True:
+        plt.show()

@@ -22,6 +22,7 @@ if __name__ == '__main__':
     BASE_FEATURES = ['adjusted_avg_selected_manualy']
     WINDOW = 168
     SAVE_PREDICTION_PATH = '../../output/'
+    PLOT = False
 
     with open(SAVE_MODEL_PATH + f'{MODEL_NAME}_val_date.pkl', 'r') as val_date_file:
         val_date = dt.datetime.strptime(val_date_file.read(), "%d-%b-%Y (%H:%M:%S.%f)")
@@ -72,4 +73,5 @@ if __name__ == '__main__':
 
     df_infer.to_csv(SAVE_PREDICTION_PATH + 'd_DL1_month3.csv', index=False)
 
-    plt.show()
+    if PLOT:
+        plt.show()
