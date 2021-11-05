@@ -1,0 +1,6 @@
+@echo off
+echo download data from yahoo finance ...
+start /w yahoo_downloading.bat
+echo merging all data ... 
+start /w preprocessing.bat
+pause

@@ -31,6 +31,7 @@ if __name__ == "__main__":
     'SCHN', 
     'MT', 
     'AH.BK', 
+    '000333.SZ',
     '601899.SS',
     '600019.SS',
     '000932.SZ',
@@ -95,5 +96,8 @@ if __name__ == "__main__":
 
         if n_trial > TRIAL_LIMIT:
             break
+    
+    time.sleep(5)
 
+    driver.close()
 
