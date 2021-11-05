@@ -17,6 +17,7 @@ if __name__ == '__main__':
 
     SAVE_PATH = '../../data/preprocessed/domestic_transformerv1_avgsel.csv'
     MAX_WINDOW = 7*4*6
+    PLOT = False
 
     df_target = pd.read_csv(DOMESTIC_PREP_PATH)
     df_target['date'] = pd.to_datetime(df_target['date'])
@@ -50,4 +51,5 @@ if __name__ == '__main__':
     plt.plot(df['target_date'], df['Domestics price (SM)'])
     plt.plot(df['target_date'], df['target'])
 
-    plt.show()
+    if PLOT:
+        plt.show()
