@@ -15,6 +15,8 @@ if __name__ == "__main__":
     SAVE_PATH = '../../data/preprocessed/domestic_transformerv1_avgsel_1week.csv'
     MAX_WINDOW = 7*4*6
 
+    PLOT = False
+
     df_target = pd.read_csv(DOMESTIC_PREP_PATH)
     df_target['date'] = pd.to_datetime(df_target['date'])
     df_target['target_date'] = pd.to_datetime(df_target['target_date'])
@@ -47,4 +49,5 @@ if __name__ == "__main__":
 
     df.to_csv(SAVE_PATH, index=False)
 
-    plt.show()
+    if PLOT:
+        plt.show()

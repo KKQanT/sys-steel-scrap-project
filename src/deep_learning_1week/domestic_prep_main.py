@@ -13,6 +13,8 @@ if __name__ == "__main__":
 
     SAVE_PATH = '../../data/preprocessed/domestic_prep_1week.csv'
 
+    PLOT = False
+
     df_price = preprocess_data_price(PRICE_PATH)
     df_main = generate_domestics_target_variable(df_price, step=7*1)
     df_daily_fill = preprocess_daily_price(DAILY_PRICE_PATH, DAILY_TEMP_PATH, df_main)
@@ -37,4 +39,5 @@ if __name__ == "__main__":
 
     df.to_csv(SAVE_PATH, index=False)
 
-    plt.show()
+    if PLOT:
+        plt.show()
