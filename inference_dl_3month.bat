@@ -1,2 +1,2 @@
 cmd /k "cd venv/Scripts & activate & cd ../../src/deep_learning & python domestic_baseline_gru_avg_prep.py & python domestic_baseline_gru_avg_inference.py & python domestic_bigru_avg_prep.py & python domestic_bigru_avg_inference.py & python domestic_transformerv1_avgsel_prep.py & python domestic_transformerv1_avgsel_inference.py & python taiwan_gru_baseline_avg_prep.py & python taiwan_gru_baseline_avg_inference.py & python taiwan_small_bigru_avgadj2_prep.py & python taiwan_small_bigru_avgadj2_inference.py & exit"
-exit
+pause

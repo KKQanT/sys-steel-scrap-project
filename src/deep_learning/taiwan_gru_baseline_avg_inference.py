@@ -5,7 +5,6 @@ import tensorflow as tf
 
 import matplotlib
 import matplotlib.pyplot as plt
-from deep_learning.domestic_baseline_gru_avg_inference import PLOT
 
 from util import make_weight_avg, window_sliding_X
 
