@@ -12,7 +12,7 @@ if __name__ == '__main__':
     SPLIT_PCT = 20
     WINDOW = 168
     BASE_FEATURES = ['adjusted_avg_selected_manualy']
-    MODEL_NAME = 'transformerv1_avgsel_week1_to_4'
+    MODEL_NAME = 'domestic_transformerv1_avgsel_week1_to_4'
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
 
     HEAD_SIZE = 256

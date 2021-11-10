@@ -1,6 +1,6 @@
 import pandas as pd
 import datetime as dt
-from util import preprocess_target, make_weight_avg, window_sliding_X
+from util import preprocess_target, make_weight_avg, window_sliding_X, TargetMinMaxScaler
 import pickle
 import matplotlib
 import matplotlib.pyplot as plt
@@ -11,8 +11,8 @@ import tensorflow as tf
 if __name__ == '__main__':
     PREP_DATA_PATH = '../../data/preprocessed/domestic_transformerv1_avgsel_week1_to_4.csv'
     BASE_FEATURES = ['adjusted_avg_selected_manualy']
-    MODEL_NAME = 'transformerv1_avgsel_week1_to_4'
-    SAVE_MODEL_PATH = '../../model/deep_learning/execcuting/'
+    MODEL_NAME = 'domestic_transformerv1_avgsel_week1_to_4'
+    SAVE_MODEL_PATH = '../../model/deep_learning/executing/'
     WINDOW = 168
     SAVE_PREDICTION_PATH = '../../output/'
     PLOT = True
