@@ -123,7 +123,7 @@ def window_sliding(X, y, idxs, window):
 
   return X_windows, y_windows
 
-def windowlized(df, cols, val_date, test_date, valid_target_date, window):
+def windowlized(df, cols, val_date, test_date, valid_target_date, window, n_seq):
 
   valid_date = df[df['target'].isna() == False]['target_date_1'].min() - dt.timedelta(window)
   df_valid = pd.DataFrame(df[df['target_date_1'] >= valid_date]).reset_index(drop=True)
@@ -140,7 +140,7 @@ def windowlized(df, cols, val_date, test_date, valid_target_date, window):
 
   train_date = val_date - dt.timedelta(7*1)
 
-  df_valid.loc[df_valid['target'].isna(), 'target'] = df_valid.loc[df_valid['target'].isna()]['target'].apply(lambda x : [9999,9999,9999,9999])
+  df_valid.loc[df_valid['target'].isna(), 'target'] = df_valid.loc[df_valid['target'].isna()]['target'].apply(lambda x : [9999 for i in range(n_seq)])
 
   X_valid, y_valid = df_valid[cols].values, np.array(df_valid['target'].dropna().apply(lambda x : np.array(x)).tolist())
   X_valid = scaler_X.transform(X_valid)
