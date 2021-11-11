@@ -7,11 +7,10 @@ import matplotlib.pyplot as plt
 from tensorflow_addons.layers import MultiHeadAttention
 import tensorflow as tf
 
-
 if __name__ == '__main__':
-    PREP_DATA_PATH = '../../data/preprocessed/domestic_transformerv1_avgsel_week1_to_4.csv'
+    PREP_DATA_PATH = '../../data/preprocessed/domestic_transformerv1_avgsel_week1_to_12.csv'
     BASE_FEATURES = ['adjusted_avg_selected_manualy']
-    MODEL_NAME = 'domestic_transformerv1_avgsel_week1_to_4'
+    MODEL_NAME = 'domestic_transformerv1_avgsel_week1_to_12'
     SAVE_MODEL_PATH = '../../model/deep_learning/executing/'
     WINDOW = 168
     SAVE_PREDICTION_PATH = '../../output/'
@@ -50,14 +49,14 @@ if __name__ == '__main__':
     y_predict = scaler_y.inverse_transform(y_predict)
     df_infer['predict'] = y_predict[:,0]
 
-    matplotlib.rc('font', **{'size':30})
-    f,ax = plt.subplots(figsize=(40, 10))
+    matplotlib.rc('font', **{'size':10})
+    f,ax = plt.subplots(figsize=(10, 4))
     plt.plot(df_infer['date'], df_infer['Domestics price (SM)'], 'x-', color='#16A085', label='actual', linewidth=3)  
     plt.plot(df_infer.iloc[:-1, :]['target_date_1'], df_infer.iloc[:-1, :]['predict'], 'x-', color='#7D3C98', label='predict', linewidth=3)  
 
     df_extend = pd.DataFrame(
         {
-        'target_date':pd.date_range(df_infer['target_date_1'].max() + dt.timedelta(days=7*1), df_infer['target_date_1'].max() + dt.timedelta(days=7*3), freq="7d"),
+        'target_date':pd.date_range(df_infer['target_date_1'].max()+dt.timedelta(days=7*1) , df_infer['target_date_1'].max() + dt.timedelta(days=7*11), freq="7d"),
         'predict':y_predict[-1][1:] 
             }
 
@@ -68,17 +67,17 @@ if __name__ == '__main__':
     plt.legend()
 
     df_extend['date'] = df_infer['date'].max()
-
     infer_date = df_infer.loc[df_infer['Domestics price (SM)'].isna() == False]['target_date_1'].max() - dt.timedelta(days=1)
     features = [col for col in df_infer.columns.tolist() if col not in ['date', 'target_date_1', 'target', 'predict']]
     for col in features:
-      df_infer = df_infer.rename(columns = {col : f'd_DL1_week1_to_week4_{col}'})
-    df_infer.loc[df_infer['target_date_1'] > infer_date, 'd_DL1_week1_to_week4_pred'] = df_infer['predict']
-    df_infer.loc[df_infer['target_date_1'] <= infer_date, 'd_DL1_week1_to_week4'] = df_infer['predict']
+      df_infer = df_infer.rename(columns = {col : f'd_DL1_week1_to_month3_{col}'})
+    df_infer.loc[df_infer['target_date_1'] > infer_date, 'd_DL1_week1_to_month3_pred'] = df_infer['predict']
+    df_infer.loc[df_infer['target_date_1'] <= infer_date, 'd_DL1_week1_to_month3'] = df_infer['predict']
     df_infer = df_infer.drop(columns=['predict',])
 
-    df_infer.to_csv(SAVE_PREDICTION_PATH + 'd_DL1_week1_to_4.csv', index=False)
-    df_extend.to_csv(SAVE_PREDICTION_PATH + 'd_DL1_week1_to_4_extended.csv', index=False)
+    df_infer.to_csv(SAVE_PREDICTION_PATH + 'd_DL1_week1_to_12.csv', index=False)
+
+    df_extend.to_csv(SAVE_PREDICTION_PATH + 'd_DL1_week1_to_12_extended.csv', index=False)
 
     if PLOT:
         plt.show()
