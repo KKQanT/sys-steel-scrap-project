@@ -18,4 +18,10 @@ start /w inference_dl_3month.bat
 echo predicting scrap price (at next 1 week) ... (deep learning)
 start /w inference_dl_1week.bat
 
+echo predicting scrap price (at week 1 - 4 and week 1 - 12) ... (deep learning seq2seq)
+start /w inference_dl_seq2seq.bat
+
+echo merging output
+start /w merge_output.bat
+
 pause

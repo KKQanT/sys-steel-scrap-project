@@ -14,7 +14,7 @@ if __name__ == '__main__':
     SAVE_MODEL_PATH = '../../model/deep_learning/executing/'
     WINDOW = 168
     SAVE_PREDICTION_PATH = '../../output/'
-    PLOT = False
+    PLOT = True
 
     with open(SAVE_MODEL_PATH + f'{MODEL_NAME}_val_date.pkl', 'r') as val_date_file:
         val_date = dt.datetime.strptime(val_date_file.read(), "%d-%b-%Y (%H:%M:%S.%f)")
@@ -56,8 +56,8 @@ if __name__ == '__main__':
 
     df_extend = pd.DataFrame(
         {
-        'target_date':pd.date_range(df_infer['target_date_1'].max()+dt.timedelta(days=7*1) , df_infer['target_date_1'].max() + dt.timedelta(days=7*11), freq="7d"),
-        'predict':y_predict[-1][1:] 
+        'target_date':pd.date_range(df_infer['target_date_1'].max()+dt.timedelta(days=7*0) , df_infer['target_date_1'].max() + dt.timedelta(days=7*11), freq="7d"),
+        'predict':y_predict[-1][0:] 
             }
 
         )
