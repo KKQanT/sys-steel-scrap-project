@@ -50,14 +50,14 @@ class Inference(QWidget):
         chckbox_layout.addWidget(self.inference_dl_seq2seq)
         chckbox_layout.addWidget(self.merge_output)
 
-        button_layout = QHBoxLayout()
+        button_layout = QVBoxLayout()
         button_layout.addWidget(self.selectAllButton)
         button_layout.addWidget(self.clearButton)
         button_layout.addWidget(self.okButton)
 
         layout = QGridLayout()
         layout.addLayout(chckbox_layout, 0, 0)
-        layout.addLayout(button_layout, 1, 0)
+        layout.addLayout(button_layout, 0, 1)
 
         self.setLayout(layout)
 
