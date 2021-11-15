@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
     matplotlib.rc('font', **{'size':15})
 
-    f,ax = plt.subplots(figsize=(12, 4))
+    f,ax = plt.subplots(figsize=(15, 5))
     plt.plot(df_train['target_date'], df_train['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
     plt.plot(df_train['target_date'], df_train['predict'], 'x-', color=color,  linewidth=1, alpha=0.3)
 
@@ -95,4 +95,4 @@ if __name__ == "__main__":
     plt.legend()
     plt.axvline(val_date, linestyle='dashed', color='#21618C')
     plt.axvline(test_date, linestyle='dashed', color='#8E44AD')
-    plt.show()
+    plt.savefig('../../output/taiwan_small_bigru_avgadj2.png')

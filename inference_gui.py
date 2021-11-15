@@ -3,11 +3,7 @@ from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QVBoxLayout,
 
 import subprocess
 
-class Tabwidget(QMainWindow):
-    pass
-
-
-class RunInference(QWidget):
+class Inference(QWidget):
 
     def __init__(self):
         super().__init__()
@@ -104,7 +100,7 @@ class RunInference(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    ex = RunInference()
-    ex.show()
+    window = Inference()
+    window.show()
     sys.exit(app.exec_())
 
