@@ -1,21 +1,19 @@
 import sys
-from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QVBoxLayout, QWidget, QCheckBox, QPushButton, QMainWindow, QGridLayout
-from PyQt5.QtGui import QIcon
 
 import subprocess
 
+class Tabwidget(QMainWindow):
+    pass
 
-class RunInference(QMainWindow):
+
+class RunInference(QWidget):
 
     def __init__(self):
         super().__init__()
 
         self._title = 'steel scrap inference'
         self.setWindowTitle(self._title)
-
-        self._main = QWidget()
-        self.setCentralWidget(self._main)
         
         self.update_stooq_chkbox = QCheckBox("update steel scrap LME")
         self.update_stooq_chkbox.setChecked(True)
@@ -61,9 +59,11 @@ class RunInference(QMainWindow):
         button_layout.addWidget(self.clearButton)
         button_layout.addWidget(self.okButton)
 
-        layout = QGridLayout(self._main)
+        layout = QGridLayout()
         layout.addLayout(chckbox_layout, 0, 0)
         layout.addLayout(button_layout, 1, 0)
+
+        self.setLayout(layout)
 
     def onClickSelectAllButton(self):
         self.update_stooq_chkbox.setChecked(True)
@@ -102,9 +102,9 @@ class RunInference(QMainWindow):
             subprocess.call('merge_output.bat')
 
 
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = RunInference()
     ex.show()
     sys.exit(app.exec_())
+
