@@ -49,8 +49,8 @@ if __name__ == "__main__":
     y_predict = scaler_y.inverse_transform(y_predict)
     df_infer['predict'] = y_predict
 
-    matplotlib.rc('font', **{'size':10})
-    f,ax = plt.subplots(figsize=(12, 4))
+    matplotlib.rc('font', **{'size':30})
+    f,ax = plt.subplots(figsize=(40, 10))
     plt.plot(df_infer['target_date'], df_infer['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
     plt.plot(df_infer['target_date'], df_infer['predict'], 'x-', color='#7D3C98', label='predict', linewidth=3)  
     plt.legend()

@@ -22,7 +22,7 @@ def initiate(save_path):
 if __name__ == "__main__":
 
     SAVE_PATH = os.path.realpath('../../data/yahoo/')
-    DELAY_TIME = 1
+    DELAY_TIME = 2
     TRIAL_LIMIT = 30
 
     STOCKS_NAME = [
@@ -72,12 +72,12 @@ if __name__ == "__main__":
                 period = driver.find_element_by_xpath('//*[@id="Col1-1-HistoricalDataTable-Proxy"]/section/div[1]/div[1]/div[1]/div/div/div/span')
                 period.click()
 
-                time.sleep(DELAY_TIME)
+                time.sleep(DELAY_TIME+3)
 
                 max_button = driver.find_element_by_xpath('//*[@id="dropdown-menu"]/div/ul[2]/li[4]/button')
                 max_button.click()
 
-                time.sleep(DELAY_TIME)
+                time.sleep(DELAY_TIME+3)
 
                 period_validate = period.text
 
