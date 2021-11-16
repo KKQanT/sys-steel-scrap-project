@@ -78,21 +78,25 @@ if __name__ == "__main__":
     df_val['predict'] = val_predict
     df_test['predict'] = test_predict
 
-    val_mape = np.round(mean_absolute_percentage_error(df_val['target'], df_val['predict'])*100, decimals=1)
-    test_mape = np.round(mean_absolute_percentage_error(df_test['target'], df_test['predict'])*100, decimals=1)
+    #val_mape = np.round(mean_absolute_percentage_error(df_val['target'], df_val['predict'])*100, decimals=1)
+    #test_mape = np.round(mean_absolute_percentage_error(df_test['target'], df_test['predict'])*100, decimals=1)
 
-    matplotlib.rc('font', **{'size':15})
+    #matplotlib.rc('font', **{'size':15})
+#
+    #f,ax = plt.subplots(figsize=(15, 5))
+    ##plt.plot(df_train['target_date'], df_train['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
+    ##plt.plot(df_train['target_date'], df_train['predict'], 'x-', color=color,  linewidth=1, alpha=0.3)
+#
+    #plt.plot(df_val['target_date'], df_val['target'], 'x-' , color='#16A085', linewidth=3)
+    #plt.plot(df_val['target_date'], df_val['predict'], 'x-', color=color,  linewidth=3)
+#
+    #plt.plot(df_test['target_date'], df_test['target'], 'x-', color='#16A085', linewidth=3)
+    #plt.plot(df_test['target_date'], df_test['predict'], 'x-', color=color, label=f'predicted val mape: {val_mape}%, test mape: {test_mape}%', linewidth=3)
+    #plt.legend()
+    #plt.axvline(val_date, linestyle='dashed', color='#21618C')
+    #plt.axvline(test_date, linestyle='dashed', color='#8E44AD')
+    #plt.savefig('../../output/output.png')
 
-    f,ax = plt.subplots(figsize=(15, 5))
-    #plt.plot(df_train['target_date'], df_train['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
-    #plt.plot(df_train['target_date'], df_train['predict'], 'x-', color=color,  linewidth=1, alpha=0.3)
-
-    plt.plot(df_val['target_date'], df_val['target'], 'x-' , color='#16A085', linewidth=3)
-    plt.plot(df_val['target_date'], df_val['predict'], 'x-', color=color,  linewidth=3)
-
-    plt.plot(df_test['target_date'], df_test['target'], 'x-', color='#16A085', linewidth=3)
-    plt.plot(df_test['target_date'], df_test['predict'], 'x-', color=color, label=f'predicted val mape: {val_mape}%, test mape: {test_mape}%', linewidth=3)
-    plt.legend()
-    plt.axvline(val_date, linestyle='dashed', color='#21618C')
-    plt.axvline(test_date, linestyle='dashed', color='#8E44AD')
-    plt.savefig('../../output/output.png')
+    df_train.to_csv('../../output/taiwan_small_bigru_avgadj2_train.csv', index=False)
+    df_val.to_csv('../../output/taiwan_small_bigru_avgadj2_val.csv', index=False)
+    df_test.to_csv('../../output/taiwan_small_bigru_avgadj2_test', index=False)

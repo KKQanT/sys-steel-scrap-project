@@ -10,6 +10,7 @@ import matplotlib
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import Sequential
 import tensorflow.keras.layers as L
+from deep_learning.taiwan_small_bigru_avgadj2_train import N_UNITS
 
 from validation import get_val_test_date, get_valid_target_date
 from util import make_weight_avg, windowlized
@@ -22,6 +23,7 @@ if __name__ == "__main__":
     BASE_FEATURES = ['adjusted_avg_factors']
     SEED = 0
     WINDOW = 168
+    N_UNITS = 2
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
 
     val_date, test_date = get_val_test_date(TAIWAN_PREP_PATH, SPLIT_PCT)
@@ -48,7 +50,7 @@ if __name__ == "__main__":
 
     tf.random.set_seed(SEED)
     model = Sequential()
-    model.add(L.GRU(2, input_shape=(WINDOW, len(BASE_FEATURES),), 
+    model.add(L.GRU(N_UNITS, input_shape=(WINDOW, len(BASE_FEATURES),), 
                     return_sequences = False,
                     stateful=False,
                     go_backwards=False))
@@ -80,18 +82,22 @@ if __name__ == "__main__":
     val_mape = np.round(mean_absolute_percentage_error(df_val['target'], df_val['predict'])*100, decimals=1)
     test_mape = np.round(mean_absolute_percentage_error(df_test['target'], df_test['predict'])*100, decimals=1)
 
-    matplotlib.rc('font', **{'size':30})
+    #matplotlib.rc('font', **{'size':30})
+#
+    #f,ax = plt.subplots(figsize=(13, 5))
+    #plt.plot(df_train['target_date'], df_train['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
+    #plt.plot(df_train['target_date'], df_train['predict'], 'x-', color=color,  linewidth=1, alpha=0.3)
+#
+    #plt.plot(df_val['target_date'], df_val['target'], 'x-' , color='#16A085', linewidth=3)
+    #plt.plot(df_val['target_date'], df_val['predict'], 'x-', color=color,  linewidth=3)
+#
+    #plt.plot(df_test['target_date'], df_test['target'], 'x-', color='#16A085', linewidth=3)
+    #plt.plot(df_test['target_date'], df_test['predict'], 'x-', color=color, label=f'predicted val mape: {val_mape}%, test mape: {test_mape}%', linewidth=3)
+    #plt.legend()
+    #plt.axvline(val_date, linestyle='dashed', color='#21618C')
+    #plt.axvline(test_date, linestyle='dashed', color='#8E44AD')
+    #plt.show()
 
-    f,ax = plt.subplots(figsize=(13, 5))
-    plt.plot(df_train['target_date'], df_train['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
-    plt.plot(df_train['target_date'], df_train['predict'], 'x-', color=color,  linewidth=1, alpha=0.3)
-
-    plt.plot(df_val['target_date'], df_val['target'], 'x-' , color='#16A085', linewidth=3)
-    plt.plot(df_val['target_date'], df_val['predict'], 'x-', color=color,  linewidth=3)
-
-    plt.plot(df_test['target_date'], df_test['target'], 'x-', color='#16A085', linewidth=3)
-    plt.plot(df_test['target_date'], df_test['predict'], 'x-', color=color, label=f'predicted val mape: {val_mape}%, test mape: {test_mape}%', linewidth=3)
-    plt.legend()
-    plt.axvline(val_date, linestyle='dashed', color='#21618C')
-    plt.axvline(test_date, linestyle='dashed', color='#8E44AD')
-    plt.show()
+    df_train.to_csv('../../output/taiwan_gru_baseline_avg_train.csv', index=False)
+    df_val.to_csv('../../output/taiwan_gru_baseline_avg_val.csv', index=False)
+    df_test.to_csv('../../output/taiwan_gru_baseline_avg_test.csv', index=False)
