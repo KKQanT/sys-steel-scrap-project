@@ -47,6 +47,7 @@ class Train(QWidget):
             'taiwan_gru_baseline_avg',
             ])
         self.select_model.currentTextChanged.connect(self.onSelectModelChanged)
+        self.select_model.currentTextChanged.connect(self.updateGraph)
         select_model_layout = QVBoxLayout()
         select_model_layout.addWidget(self.select_model)
 
@@ -69,19 +70,20 @@ class Train(QWidget):
         self.df_val['target_date'] = pd.to_datetime(self.df_val['target_date'])
         self.df_test['target_date'] = pd.to_datetime(self.df_test['target_date'])
 
-        sc = MplCanvas(self, width=5, height=3, dpi=100)
-        sc.axes.plot(self.df_val['target_date'], self.df_val['target'], label='actual', color='#16A085')
-        sc.axes.plot(self.df_val['target_date'], self.df_val['predict'], label='predict', color='#7D3C98')
-        sc.axes.plot(self.df_test['target_date'], self.df_test['target'], color='#16A085')
-        sc.axes.plot(self.df_test['target_date'], self.df_test['predict'], color='#7D3C98')
-        sc.axes.legend()
-        sc.axes.axvline(self.df_val['target_date'].max(), linestyle='dashed', color='red', alpha=0.5)
+        self.canvas = MplCanvas(self, width=5, height=3, dpi=100)
+        self.canvas.axes.plot(self.df_val['target_date'], self.df_val['target'], label='actual', color='#16A085')
+        self.canvas.axes.plot(self.df_val['target_date'], self.df_val['predict'], label='predict', color='#7D3C98')
+        self.canvas.axes.plot(self.df_test['target_date'], self.df_test['target'], color='#16A085')
+        self.canvas.axes.plot(self.df_test['target_date'], self.df_test['predict'], color='#7D3C98')
+        self.canvas.axes.legend()
+        self.canvas.axes.axvline(self.df_val['target_date'].max(), linestyle='dashed', color='red', alpha=0.5)
 
         graph_layout = QVBoxLayout()
-        graph_layout.addWidget(sc)
+        graph_layout.addWidget(self.canvas)
 
         train_button = QPushButton("train")
-        train_button.clicked.connect(self.train_model)
+        train_button.clicked.connect(self.sendConfig)
+        train_button.clicked.connect(self.updateGraph)
         train_layout = QVBoxLayout()
         train_layout.addWidget(train_button)
 
@@ -104,7 +106,8 @@ class Train(QWidget):
         self.param_n_units.setText(new_params_dict['param_n_units'])
         self.param_middle_dense_dim.setText(new_params_dict['param_middle_dense_dim'])
 
-    def train_model(self):
+    def sendConfig(self):
+        
         config_object = ConfigParser()
         config_object['MODEL_PARAMS'] = {
             "SPLIT_PCT":self.param_split_pct.text(),
@@ -116,6 +119,27 @@ class Train(QWidget):
 
         with open("src/deep_learning/model_config.ini", 'w') as conf:
             config_object.write(conf)
+        
+    def trainModel(self):
+        pass
+
+    def updateGraph(self):
+        
+        self.df_val = pd.read_csv(f'output/{self.select_model.currentText()}_val.csv')
+        self.df_test = pd.read_csv(f'output/{self.select_model.currentText()}_test.csv')
+        self.df_val['target_date'] = pd.to_datetime(self.df_val['target_date'])
+        self.df_test['target_date'] = pd.to_datetime(self.df_test['target_date'])
+        
+        self.canvas.axes.cla()
+        self.canvas.axes.plot(self.df_val['target_date'], self.df_val['target'], label='actual', color='#16A085')
+        self.canvas.axes.plot(self.df_val['target_date'], self.df_val['predict'], label='predict', color='#7D3C98')
+        self.canvas.axes.plot(self.df_test['target_date'], self.df_test['target'], color='#16A085')
+        self.canvas.axes.plot(self.df_test['target_date'], self.df_test['predict'], color='#7D3C98')
+        self.canvas.axes.legend()
+        self.canvas.axes.axvline(self.df_val['target_date'].max(), linestyle='dashed', color='red', alpha=0.5)
+
+        self.canvas.draw()
+    
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
