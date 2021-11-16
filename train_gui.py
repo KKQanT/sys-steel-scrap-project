@@ -1,16 +1,19 @@
 import sys
-from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QComboBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 from configparser import ConfigParser
 import pandas as pd
+import numpy as np
 import matplotlib
 
 matplotlib.use('QT5Agg')
 matplotlib.rc('font', **{'size':8})
 
-import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
+
+import subprocess
+
+from sklearn.metrics import mean_absolute_percentage_error
 
 
 class MplCanvas(FigureCanvasQTAgg):
@@ -69,7 +72,6 @@ class Train(QWidget):
         self.df_test = pd.read_csv(f'output/{self.select_model.currentText()}_test.csv')
         self.df_val['target_date'] = pd.to_datetime(self.df_val['target_date'])
         self.df_test['target_date'] = pd.to_datetime(self.df_test['target_date'])
-
         self.canvas = MplCanvas(self, width=5, height=3, dpi=100)
         self.canvas.axes.plot(self.df_val['target_date'], self.df_val['target'], label='actual', color='#16A085')
         self.canvas.axes.plot(self.df_val['target_date'], self.df_val['predict'], label='predict', color='#7D3C98')
@@ -77,18 +79,29 @@ class Train(QWidget):
         self.canvas.axes.plot(self.df_test['target_date'], self.df_test['predict'], color='#7D3C98')
         self.canvas.axes.legend()
         self.canvas.axes.axvline(self.df_val['target_date'].max(), linestyle='dashed', color='red', alpha=0.5)
-
         graph_layout = QVBoxLayout()
         graph_layout.addWidget(self.canvas)
 
+
+        val_mape = np.round(mean_absolute_percentage_error(self.df_val['target'], self.df_val['predict'])*100, decimals=1)
+        test_mape = np.round(mean_absolute_percentage_error(self.df_test['target'], self.df_test['predict'])*100, decimals=1)
+        self.val_mape_text = QLabel(f"validatation set MAPE : {val_mape}")
+        self.test_mape_text = QLabel(f"validatation set MAPE : {test_mape}")
+        performance_layout = QVBoxLayout()
+        performance_layout.addWidget(self.val_mape_text)
+        performance_layout.addWidget(self.test_mape_text)
+
+
         train_button = QPushButton("train")
         train_button.clicked.connect(self.sendConfig)
+        train_button.clicked.connect(self.trainModel)
         train_button.clicked.connect(self.updateGraph)
         train_layout = QVBoxLayout()
         train_layout.addWidget(train_button)
 
         layout = QGridLayout()
         layout.addLayout(graph_layout, 0, 0)
+        layout.addLayout(performance_layout, 1, 0)
         layout.addLayout(select_model_layout, 0, 1)
         layout.addLayout(param_layout, 1, 1)
         layout.addLayout(train_layout, 2, 1)
@@ -121,7 +134,9 @@ class Train(QWidget):
             config_object.write(conf)
         
     def trainModel(self):
-        pass
+        subprocess.call('preprocessing.bat', shell=True)
+        subprocess.call(f'cd src/deeplearning & {self.select_model.currentText()}_prep', shell=True)
+        subprocess.call(f'cd src/deeplearning & {self.select_model.currentText()}_train', shell=True)
 
     def updateGraph(self):
         
