@@ -4,8 +4,7 @@ import datetime as dt
 import tensorflow as tf
 import pickle
 from sklearn.metrics import mean_absolute_percentage_error
-import matplotlib.pyplot as plt
-import matplotlib
+import configparser
 
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import Sequential
@@ -18,13 +17,15 @@ from modeling import train_model
 
 if __name__ == "__main__":
     TAIWAN_PREP_PATH = '../../data/preprocessed/taiwan_gru_baseline_avg_prep.csv'
-    SPLIT_PCT = 20
+    #SPLIT_PCT = 20
     MODEL_NAME = 'taiwan_gru_baseline_avg'
     BASE_FEATURES = ['adjusted_avg_factors']
-    SEED = 0
-    WINDOW = 168
-    N_UNITS = 2
+    #SEED = 0
+    #WINDOW = 168
+    #N_UNITS = 2
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
+
+    
 
     val_date, test_date = get_val_test_date(TAIWAN_PREP_PATH, SPLIT_PCT)
 
