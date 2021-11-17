@@ -35,14 +35,16 @@ class Train(QWidget):
                 'param_seed':"0",
                 'param_window':"84",
                 'param_n_units':"[4,4]",
-                'param_middle_dense_dim':"None"
+                'param_middle_dense_dim':"None",
+                'param_dropout':"0"
             },
             'taiwan_gru_baseline_avg':{
                 'param_split_pct':"",
                 'param_seed':"0",
                 'param_window':"168",
                 'param_n_units':"2",
-                'param_middle_dense_dim':''
+                'param_middle_dense_dim':'',
+                "param_dropout":"0"
             }
         }
         self.select_model = QComboBox()
@@ -61,14 +63,14 @@ class Train(QWidget):
         self.param_window = QLineEdit("84")
         self.param_n_units = QLineEdit("[4, 4]")
         self.param_middle_dense_dim = QLineEdit("None")
-        self.dropout = QLineEdit('Dropout')
+        self.param_dropout = QLineEdit('0')
         param_layout = QFormLayout()
         param_layout.addRow("percentage of val+test", self.param_split_pct)
         param_layout.addRow("random seed", self.param_seed)
         param_layout.addRow("lookback window (day)", self.param_window)
         param_layout.addRow("gru units", self.param_n_units)
         param_layout.addRow("dimension of middle dense", self.param_middle_dense_dim)
-        param_layout.addRow('dropout', self.dropout)
+        param_layout.addRow('dropout', self.param_dropout)
 
 
         self.df_val = pd.read_csv(f'output/{self.select_model.currentText()}_val.csv')
@@ -121,15 +123,17 @@ class Train(QWidget):
         self.param_window.setText(new_params_dict['param_window'])
         self.param_n_units.setText(new_params_dict['param_n_units'])
         self.param_middle_dense_dim.setText(new_params_dict['param_middle_dense_dim'])
+        self.param_dropout.setText(new_params_dict['param_dropout'])
 
     def sendConfig(self):
-        parser = configparser()
+        parser = ConfigParser()
+        parser.read('src/deep_learning/model_config.ini')
         current_model = self.select_model.currentText().upper()
         parser.set(current_model, 'SEED', self.param_seed.text())
         parser.set(current_model, 'WINDOW', self.param_window.text())
         parser.set(current_model, 'N_UNITS', self.param_n_units.text())
         parser.set(current_model, 'MIDDLE_DENSE_DIM', self.param_middle_dense_dim.text())
-        parser.set(current_model, 'DROPOUT', self.dropout.text())
+        parser.set(current_model, 'DROPOUT', self.param_dropout.text())
 
         with open("src/deep_learning/model_config.ini", 'w') as conf:
             parser.write(conf)
@@ -137,8 +141,8 @@ class Train(QWidget):
         
     def trainModel(self):
         subprocess.call('preprocessing.bat', shell=True)
-        subprocess.call(f'cd src/deeplearning & {self.select_model.currentText()}_prep', shell=True)
-        subprocess.call(f'cd src/deeplearning & {self.select_model.currentText()}_train', shell=True)
+        subprocess.call(f'cd src/deeplearning & python {self.select_model.currentText()}_prep.py', shell=True)
+        subprocess.call(f'cd src/deeplearning & python {self.select_model.currentText()}_train.py', shell=True)
 
     def updateGraph(self):
         
