@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     SAVE_PATH = '../../data/preprocessed/taiwan_gru_baseline_avg_prep.csv'
     MAX_WINDOW = 7*4*6
-    PLOT = True
+    PLOT = False
 
     df_target = pd.read_csv(TAIWAN_PREP_PATH)
     df_target['date'] = pd.to_datetime(df_target['date'])

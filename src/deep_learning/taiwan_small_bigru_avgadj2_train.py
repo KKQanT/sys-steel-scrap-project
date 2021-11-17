@@ -2,21 +2,23 @@ import pandas as pd
 import datetime as dt
 import pickle
 import tensorflow as tf
-import numpy as np
-
-from sklearn.metrics import mean_absolute_percentage_error
-import matplotlib
-import matplotlib.pyplot as plt
+import ast
+#import numpy as np
+#
+#from sklearn.metrics import mean_absolute_percentage_error
+#import matplotlib
+#import matplotlib.pyplot as plt
 
 from util import make_weight_avg, windowlized
 from validation import get_valid_target_date, get_val_test_date
 from modeling import build_bidirectional_gru, train_model
 
+from configparser import ConfigParser
 
 
 if __name__ == "__main__":
     TAIWAN_PREP_PATH = '../../data/preprocessed/taiwan_small_bigru_avgadj2_prep.csv'
-    SPLIT_PCT = 20
+    #SPLIT_PCT = 20
 
     MODEL_NAME = 'taiwan_small_bigru_avgadj2'
     BASE_FEATURES = ['adjusted_avg_factors2']
@@ -26,6 +28,23 @@ if __name__ == "__main__":
     #go_backwards_list = [False for item in N_UNITS]
     #MIDDLE_DENSE_DIM = None
     #DROPOUT = 0
+
+    config = ConfigParser()
+    config.read('model_config.ini')
+
+    SPLIT_PCT = float(config[MODEL_NAME.upper()]['split_pct'])
+    SEED = int(config[MODEL_NAME.upper()]['seed'])
+    WINDOW = int(config[MODEL_NAME.upper()]['window'])
+    N_UNITS = ast.literal_eval(config[MODEL_NAME.upper()]['n_units'])
+    go_backwards_list = [False for item in N_UNITS]
+    MIDDLE_DENSE_DIM = config[MODEL_NAME.upper()]['middle_dense_dim']
+    if str(MIDDLE_DENSE_DIM) == "None":
+      MIDDLE_DENSE_DIM = None
+    else:
+      MIDDLE_DENSE_DIM = int(MIDDLE_DENSE_DIM)
+    DROPOUT = float(config[MODEL_NAME.upper()]['dropout'])
+
+    print(SPLIT_PCT, SEED, WINDOW, N_UNITS, go_backwards_list, MIDDLE_DENSE_DIM, DROPOUT)
 
     
 

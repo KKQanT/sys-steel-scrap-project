@@ -1,4 +1,3 @@
-import configparser
 import sys
 from PyQt5.QtWidgets import QApplication, QComboBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 from configparser import ConfigParser
@@ -141,8 +140,11 @@ class Train(QWidget):
         
     def trainModel(self):
         subprocess.call('preprocessing.bat', shell=True)
-        subprocess.call(f'cd src/deeplearning & python {self.select_model.currentText()}_prep.py', shell=True)
-        subprocess.call(f'cd src/deeplearning & python {self.select_model.currentText()}_train.py', shell=True)
+        subprocess.Popen(
+                [f'{self.select_model.currentText()}_train.bat'],
+                cwd='src/deep_learning/',
+                shell=True
+            )
 
     def updateGraph(self):
         
