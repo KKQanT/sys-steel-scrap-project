@@ -1,3 +1,4 @@
+import configparser
 import sys
 from PyQt5.QtWidgets import QApplication, QComboBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 from configparser import ConfigParser
@@ -60,12 +61,14 @@ class Train(QWidget):
         self.param_window = QLineEdit("84")
         self.param_n_units = QLineEdit("[4, 4]")
         self.param_middle_dense_dim = QLineEdit("None")
+        self.dropout = QLineEdit('Dropout')
         param_layout = QFormLayout()
         param_layout.addRow("percentage of val+test", self.param_split_pct)
         param_layout.addRow("random seed", self.param_seed)
         param_layout.addRow("lookback window (day)", self.param_window)
         param_layout.addRow("gru units", self.param_n_units)
         param_layout.addRow("dimension of middle dense", self.param_middle_dense_dim)
+        param_layout.addRow('dropout', self.dropout)
 
 
         self.df_val = pd.read_csv(f'output/{self.select_model.currentText()}_val.csv')
@@ -120,18 +123,17 @@ class Train(QWidget):
         self.param_middle_dense_dim.setText(new_params_dict['param_middle_dense_dim'])
 
     def sendConfig(self):
-        
-        config_object = ConfigParser()
-        config_object['MODEL_PARAMS'] = {
-            "SPLIT_PCT":self.param_split_pct.text(),
-            "SEED": self.param_seed.text(),
-            "WINDOW":self.param_window.text(),
-            "N_UNITS":self.param_n_units.text(),
-            "MIDDLE_DENSE_DIM":self.param_middle_dense_dim.text(),
-        }
+        parser = configparser()
+        current_model = self.select_model.currentText().upper()
+        parser.set(current_model, 'SEED', self.param_seed.text())
+        parser.set(current_model, 'WINDOW', self.param_window.text())
+        parser.set(current_model, 'N_UNITS', self.param_n_units.text())
+        parser.set(current_model, 'MIDDLE_DENSE_DIM', self.param_middle_dense_dim.text())
+        parser.set(current_model, 'DROPOUT', self.dropout.text())
 
         with open("src/deep_learning/model_config.ini", 'w') as conf:
-            config_object.write(conf)
+            parser.write(conf)
+
         
     def trainModel(self):
         subprocess.call('preprocessing.bat', shell=True)

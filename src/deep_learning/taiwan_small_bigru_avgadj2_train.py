@@ -20,12 +20,14 @@ if __name__ == "__main__":
 
     MODEL_NAME = 'taiwan_small_bigru_avgadj2'
     BASE_FEATURES = ['adjusted_avg_factors2']
-    SEED = 0
-    WINDOW = 84
-    N_UNITS = [4, 4]
-    go_backwards_list = [False for item in N_UNITS]
-    MIDDLE_DENSE_DIM = None
-    DROPOUT = 0
+    #SEED = 0
+    #WINDOW = 84
+    #N_UNITS = [4, 4]
+    #go_backwards_list = [False for item in N_UNITS]
+    #MIDDLE_DENSE_DIM = None
+    #DROPOUT = 0
+
+    
 
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
 

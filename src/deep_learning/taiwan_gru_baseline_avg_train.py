@@ -9,7 +9,7 @@ import configparser
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import Sequential
 import tensorflow.keras.layers as L
-from deep_learning.taiwan_small_bigru_avgadj2_train import N_UNITS
+from deep_learning.taiwan_small_bigru_avgadj2_train import N_UNITS, SPLIT_PCT
 
 from validation import get_val_test_date, get_valid_target_date
 from util import make_weight_avg, windowlized
@@ -24,6 +24,14 @@ if __name__ == "__main__":
     #WINDOW = 168
     #N_UNITS = 2
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
+
+    config = configparser.ConfigParser()
+    config.read('model_config.ini')
+
+    SPLIT_PCT = float(config['MODEL_PARAMS']['split_pct'])
+    SEED = int(config['MODEL_PARAMS']['seed'])
+    WINDOW = int(config['MODEL_PARAMS']['window'])
+    N_UNITS = int(config['MODEL_PARAMS']['n_units'])
 
     
 
