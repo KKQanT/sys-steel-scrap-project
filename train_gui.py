@@ -4,6 +4,7 @@ from configparser import ConfigParser
 import pandas as pd
 import numpy as np
 import matplotlib
+import time
 
 matplotlib.use('QT5Agg')
 matplotlib.rc('font', **{'size':8})
@@ -35,15 +36,17 @@ class Train(QWidget):
                 'param_window':"84",
                 'param_n_units':"[4,4]",
                 'param_middle_dense_dim':"None",
-                'param_dropout':"0"
+                'param_dropout':"0",
+                'param_epochs':"300"
             },
             'taiwan_gru_baseline_avg':{
-                'param_split_pct':"",
+                'param_split_pct':"20",
                 'param_seed':"0",
                 'param_window':"168",
                 'param_n_units':"2",
                 'param_middle_dense_dim':'',
-                "param_dropout":"0"
+                "param_dropout":"0",
+                'param_epochs':'100'
             }
         }
         self.select_model = QComboBox()
@@ -53,6 +56,7 @@ class Train(QWidget):
             ])
         self.select_model.currentTextChanged.connect(self.onSelectModelChanged)
         self.select_model.currentTextChanged.connect(self.updateGraph)
+        self.select_model.currentTextChanged.connect(self.updateMape)
         select_model_layout = QVBoxLayout()
         select_model_layout.addWidget(self.select_model)
 
@@ -63,6 +67,7 @@ class Train(QWidget):
         self.param_n_units = QLineEdit("[4, 4]")
         self.param_middle_dense_dim = QLineEdit("None")
         self.param_dropout = QLineEdit('0')
+        self.param_epochs = QLineEdit('300')
         param_layout = QFormLayout()
         param_layout.addRow("percentage of val+test", self.param_split_pct)
         param_layout.addRow("random seed", self.param_seed)
@@ -70,6 +75,7 @@ class Train(QWidget):
         param_layout.addRow("gru units", self.param_n_units)
         param_layout.addRow("dimension of middle dense", self.param_middle_dense_dim)
         param_layout.addRow('dropout', self.param_dropout)
+        param_layout.addRow('epochs', self.param_epochs)
 
 
         self.df_val = pd.read_csv(f'output/{self.select_model.currentText()}_val.csv')
@@ -90,16 +96,17 @@ class Train(QWidget):
         val_mape = np.round(mean_absolute_percentage_error(self.df_val['target'], self.df_val['predict'])*100, decimals=1)
         test_mape = np.round(mean_absolute_percentage_error(self.df_test['target'], self.df_test['predict'])*100, decimals=1)
         self.val_mape_text = QLabel(f"validatation set MAPE : {val_mape}")
-        self.test_mape_text = QLabel(f"validatation set MAPE : {test_mape}")
+        self.test_mape_text = QLabel(f"test set MAPE : {test_mape}")
         performance_layout = QVBoxLayout()
         performance_layout.addWidget(self.val_mape_text)
         performance_layout.addWidget(self.test_mape_text)
 
 
         train_button = QPushButton("train")
-        train_button.clicked.connect(self.sendConfig)
+        #train_button.clicked.connect(self.sendConfig)
         train_button.clicked.connect(self.trainModel)
-        train_button.clicked.connect(self.updateGraph)
+        #train_button.clicked.connect(self.updateGraph)
+        #train_button.clicked.connect(self.updateMape)
         train_layout = QVBoxLayout()
         train_layout.addWidget(train_button)
 
@@ -123,6 +130,7 @@ class Train(QWidget):
         self.param_n_units.setText(new_params_dict['param_n_units'])
         self.param_middle_dense_dim.setText(new_params_dict['param_middle_dense_dim'])
         self.param_dropout.setText(new_params_dict['param_dropout'])
+        self.param_epochs.setText(new_params_dict['param_epochs'])
 
     def sendConfig(self):
         parser = ConfigParser()
@@ -133,18 +141,28 @@ class Train(QWidget):
         parser.set(current_model, 'N_UNITS', self.param_n_units.text())
         parser.set(current_model, 'MIDDLE_DENSE_DIM', self.param_middle_dense_dim.text())
         parser.set(current_model, 'DROPOUT', self.param_dropout.text())
+        parser.set(current_model, 'EPOCHS', self.param_epochs.text())
 
         with open("src/deep_learning/model_config.ini", 'w') as conf:
             parser.write(conf)
 
         
     def trainModel(self):
+
+        self.sendConfig()
+
+        time.sleep(2)
+
         subprocess.call('preprocessing.bat', shell=True)
-        subprocess.Popen(
+        process = subprocess.Popen(
                 [f'{self.select_model.currentText()}_train.bat'],
                 cwd='src/deep_learning/',
                 shell=True
             )
+        process.communicate()
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+        self.updateGraph()
+        self.updateMape()
 
     def updateGraph(self):
         
@@ -162,6 +180,12 @@ class Train(QWidget):
         self.canvas.axes.axvline(self.df_val['target_date'].max(), linestyle='dashed', color='red', alpha=0.5)
 
         self.canvas.draw()
+
+    def updateMape(self):
+        val_mape = np.round(mean_absolute_percentage_error(self.df_val['target'], self.df_val['predict'])*100, decimals=1)
+        test_mape = np.round(mean_absolute_percentage_error(self.df_test['target'], self.df_test['predict'])*100, decimals=1)
+        self.val_mape_text.setText(f"validatation set MAPE : {val_mape}")
+        self.test_mape_text.setText(f"test set MAPE : {test_mape}")
     
 
 if __name__ == "__main__":

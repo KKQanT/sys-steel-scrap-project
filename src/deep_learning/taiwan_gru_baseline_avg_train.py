@@ -31,9 +31,10 @@ if __name__ == "__main__":
     SEED = int(config[MODEL_NAME.upper()]['seed'])
     WINDOW = int(config[MODEL_NAME.upper()]['window'])
     N_UNITS = int(config[MODEL_NAME.upper()]['n_units'])
+    EPOCHS = int(config[MODEL_NAME.upper()]['epochs'])
 
     print('-------------------------------------------------')
-    print('config value : ', SPLIT_PCT, SEED, WINDOW, N_UNITS)
+    print('config value : ', SPLIT_PCT, SEED, WINDOW, N_UNITS, EPOCHS)
     print('---------------------------------------------------')
 
     val_date, test_date = get_val_test_date(TAIWAN_PREP_PATH, SPLIT_PCT)
@@ -71,7 +72,7 @@ if __name__ == "__main__":
 
     model.summary()
 
-    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=100, batch_size=32, save_path=SAVE_MODEL_PATH,
+    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=EPOCHS, batch_size=32, save_path=SAVE_MODEL_PATH,
     save_best_only=True)
 
     model = tf.keras.models.load_model(SAVE_MODEL_PATH+f'{MODEL_NAME}.h5')

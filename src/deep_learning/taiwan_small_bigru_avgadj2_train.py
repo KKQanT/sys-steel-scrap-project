@@ -43,6 +43,7 @@ if __name__ == "__main__":
     else:
       MIDDLE_DENSE_DIM = int(MIDDLE_DENSE_DIM)
     DROPOUT = float(config[MODEL_NAME.upper()]['dropout'])
+    EPOCHS = int(config[MODEL_NAME.upper()]['epochs'])
 
     print(SPLIT_PCT, SEED, WINDOW, N_UNITS, go_backwards_list, MIDDLE_DENSE_DIM, DROPOUT)
 
@@ -81,7 +82,7 @@ if __name__ == "__main__":
 
     model.summary()
 
-    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=300, batch_size=32, save_path=SAVE_MODEL_PATH)
+    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=EPOCHS, batch_size=32, save_path=SAVE_MODEL_PATH)
 
     model = tf.keras.models.load_model(SAVE_MODEL_PATH+f'{MODEL_NAME}.h5')
 

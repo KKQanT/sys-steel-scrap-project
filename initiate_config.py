@@ -9,16 +9,18 @@ if __name__ == "__main__":
         "WINDOW":"84",
         "N_UNITS":"[4,4]",
         "MIDDLE_DENSE_DIM":"None",
-        "DROPOUT":"0"
+        "DROPOUT":"0",
+        'EPOCHS':"300"
     }
 
     config_object['taiwan_gru_baseline_avg'.upper()] = {
         "SPLIT_PCT":"20",
-        "SEED":0,
+        "SEED":"0",
         "WINDOW":"168",
-        "N_UNITS":2,
+        "N_UNITS":"2",
         "MIDDLE_DENSE_DIM":"",
-        "DROPOUT":""
+        "DROPOUT":"",
+        "EPOCHS":'100'
     }
 
     with open("src/deep_learning/model_config.ini", 'w') as conf:
