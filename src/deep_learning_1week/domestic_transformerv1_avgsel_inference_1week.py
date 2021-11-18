@@ -61,8 +61,8 @@ if __name__ == "__main__":
       df_infer = df_infer.rename(columns = {col : f'd_DL1_week1_{col}'})
     
     infer_date = df_infer.loc[df_infer['target'].isna() == False]['target_date'].max()
-    df_infer.loc[df_infer['target_date'] >= infer_date, 'd_DL1_week1_pred'] = df_infer['predict']
-    df_infer.loc[df_infer['target_date'] < infer_date, 'd_DL1_week1'] = df_infer['predict']
+    df_infer.loc[df_infer['target_date'] > infer_date, 'd_DL1_week1_pred'] = df_infer['predict']
+    df_infer.loc[df_infer['target_date'] <= infer_date, 'd_DL1_week1'] = df_infer['predict']
     df_infer = df_infer.drop(columns=['predict',])
 
     df_infer.to_csv(SAVE_PREDICTION_PATH + 'd_DL1_week1.csv', index=False)
