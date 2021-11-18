@@ -73,8 +73,8 @@ if __name__ == '__main__':
     features = [col for col in df_infer.columns.tolist() if col not in ['date', 'target_date_1', 'target', 'predict']]
     for col in features:
       df_infer = df_infer.rename(columns = {col : f'd_DL1_week1_to_week4_{col}'})
-    df_infer.loc[df_infer['target_date_1'] > infer_date, 'd_DL1_week1_to_week4_pred'] = df_infer['predict']
-    df_infer.loc[df_infer['target_date_1'] <= infer_date, 'd_DL1_week1_to_week4'] = df_infer['predict']
+    df_infer.loc[df_infer['target_date_1'] >= infer_date, 'd_DL1_week1_to_week4_pred'] = df_infer['predict']
+    df_infer.loc[df_infer['target_date_1'] < infer_date, 'd_DL1_week1_to_week4'] = df_infer['predict']
     df_infer = df_infer.drop(columns=['predict',])
 
     df_infer.to_csv(SAVE_PREDICTION_PATH + 'd_DL1_week1_to_4.csv', index=False)
