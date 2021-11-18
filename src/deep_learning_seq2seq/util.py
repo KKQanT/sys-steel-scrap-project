@@ -38,6 +38,8 @@ def preprocess_data_price(price_path):
 
   df_price = df_price_filled.copy()
 
+  df_price['date'] = df_price['date'] - dt.timedelta(days=2)
+
   return df_price
 
 def read_steel_lme(steel_lme_path):

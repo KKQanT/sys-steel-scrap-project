@@ -30,6 +30,7 @@ def preprocess_data_price(price_path):
   df_price_filled = pd.DataFrame(df_price_filled[df_price_filled['date'].isin(pdate_range) == True]).reset_index(drop=True)
 
   df_price = df_price_filled.copy()
+  df_price['date'] = df_price['date'] - dt.timedelta(days=2)
 
   return df_price
 

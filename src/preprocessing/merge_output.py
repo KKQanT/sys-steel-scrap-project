@@ -109,7 +109,7 @@ if __name__ == "__main__":
     
     df_main = df_main.append(df_extend_filled, ignore_index=True)
 
-    df_main = pd.DataFrame(df_main[df_main['date'] < dt.datetime.now()]).reset_index(drop=True)
+    #df_main = pd.DataFrame(df_main[df_main['date'] < dt.datetime.now()]).reset_index(drop=True)
 
     rename_dict = {'000333.SZ':'Midea_Group', '000932.SZ':'Hunan_Valin_Steel', 
     '601899.SS': 'Zijin_Mining', '600019.SS': 'Baoshan_Iron&Steel', 
