@@ -14,10 +14,14 @@ if __name__ == "__main__":
     SPLIT_PCT = 20
     MODEL_NAME = 'taiwan_small_bigru_avgadj2'
     BASE_FEATURES = ['adjusted_avg_factors2']
-    WINDOW = 84
+    #WINDOW = 84
     SAVE_MODEL_PATH = '../../model/deep_learning/executing/'
     SAVE_PREDICTION_PATH = '../../output/'
     PLOT = True
+
+    config = ConfigParser()
+    config.read('infer_model_config.ini')
+    WINDOW = int(config[MODEL_NAME.upper()]['window'])
 
     with open(SAVE_MODEL_PATH + f'{MODEL_NAME}_val_date.pkl', 'r') as val_date_file:
         val_date = dt.datetime.strptime(val_date_file.read(), "%d-%b-%Y (%H:%M:%S.%f)")

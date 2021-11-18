@@ -5,6 +5,8 @@ import pandas as pd
 import numpy as np
 import matplotlib
 import time
+import shutil
+import os
 
 matplotlib.use('QT5Agg')
 matplotlib.rc('font', **{'size':8})
@@ -103,16 +105,20 @@ class Train(QWidget):
 
 
         train_button = QPushButton("train")
-        #train_button.clicked.connect(self.sendConfig)
         train_button.clicked.connect(self.trainModel)
-        #train_button.clicked.connect(self.updateGraph)
-        #train_button.clicked.connect(self.updateMape)
         train_layout = QVBoxLayout()
         train_layout.addWidget(train_button)
+
+        migration_button = QPushButton("replace previous model")
+        migration_button.clicked.connect(self.sendInferenceCConfig)
+        migration_button.clicked.connect(self.migrateModel)
+        migration_button_layout = QVBoxLayout()
+        migration_button_layout.addWidget(migration_button)
 
         layout = QGridLayout()
         layout.addLayout(graph_layout, 0, 0)
         layout.addLayout(performance_layout, 1, 0)
+        layout.addLayout(migration_button_layout, 2, 0)
         layout.addLayout(select_model_layout, 0, 1)
         layout.addLayout(param_layout, 1, 1)
         layout.addLayout(train_layout, 2, 1)
@@ -136,16 +142,15 @@ class Train(QWidget):
         parser = ConfigParser()
         parser.read('src/deep_learning/model_config.ini')
         current_model = self.select_model.currentText().upper()
-        parser.set(current_model, 'SEED', self.param_seed.text())
-        parser.set(current_model, 'WINDOW', self.param_window.text())
-        parser.set(current_model, 'N_UNITS', self.param_n_units.text())
-        parser.set(current_model, 'MIDDLE_DENSE_DIM', self.param_middle_dense_dim.text())
-        parser.set(current_model, 'DROPOUT', self.param_dropout.text())
-        parser.set(current_model, 'EPOCHS', self.param_epochs.text())
+        parser.set(current_model, 'seed', self.param_seed.text())
+        parser.set(current_model, 'window', self.param_window.text())
+        parser.set(current_model, 'n_units', self.param_n_units.text())
+        parser.set(current_model, 'middel_dense_dim', self.param_middle_dense_dim.text())
+        parser.set(current_model, 'dropout', self.param_dropout.text())
+        parser.set(current_model, 'epochs', self.param_epochs.text())
 
         with open("src/deep_learning/model_config.ini", 'w') as conf:
             parser.write(conf)
-
         
     def trainModel(self):
 
@@ -160,7 +165,6 @@ class Train(QWidget):
                 shell=True
             )
         process.communicate()
-        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxx')
         self.updateGraph()
         self.updateMape()
 
@@ -186,7 +190,30 @@ class Train(QWidget):
         test_mape = np.round(mean_absolute_percentage_error(self.df_test['target'], self.df_test['predict'])*100, decimals=1)
         self.val_mape_text.setText(f"validatation set MAPE : {val_mape}")
         self.test_mape_text.setText(f"test set MAPE : {test_mape}")
-    
+
+    def sendInferenceCConfig(self):
+        parser = ConfigParser()
+        parser.read('src/deep_learning/model_config.ini')
+        current_model = self.select_model.currentText().upper()
+        WINDOW = parser[current_model]['window']
+        infer_parser = ConfigParser()
+        infer_parser.read('src/deep_learning/infer_model_config.ini')
+        infer_parser.set(current_model, 'window', WINDOW)
+        with open("src/deep_learning/infer_model_config.ini", 'w') as conf:
+            infer_parser.write(conf)
+
+    def migrateModel(self):
+        current_model = self.select_model.currentText()
+        experiment = 'model/deep_learning/experiment/'
+        executing = 'model/deep_learning/executing/'
+        
+        model_file = f'{current_model}.h5'
+        val_date_file = f'{current_model}_val_date.pkl'
+        scaler_X = f'{current_model}_scaler_X.pkl'
+        scaler_y = f'{current_model}_scaler_y.pkl'
+
+        for file in [model_file, val_date_file, scaler_X, scaler_y]:
+            shutil.copyfile(os.path.join(experiment, file), os.path.join(executing, file))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

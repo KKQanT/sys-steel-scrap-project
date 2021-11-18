@@ -25,3 +25,16 @@ if __name__ == "__main__":
 
     with open("src/deep_learning/model_config.ini", 'w') as conf:
             config_object.write(conf)
+
+    infer_config_object = ConfigParser()
+    
+    infer_config_object['taiwan_small_bigru_avgadj2'.upper()] = {
+        'WINDOW':"84"
+    }
+
+    infer_config_object['taiwan_gru_baseline_avg'.upper()] = {
+        'WINDOW':"168"
+    }
+
+    with open("src/deep_learning/infer_model_config.ini", 'w') as conf:
+            infer_config_object.write(conf)
