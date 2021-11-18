@@ -1,4 +1,5 @@
 import pandas as pd
+import datetime as dt
 
 if __name__ == "__main__":
     SAVE_PREDICTION_PATH = '../../output/'
@@ -107,5 +108,15 @@ if __name__ == "__main__":
     df_extend_filled['variable'] = 'd_DL1_week1_to_month3_pred'
     
     df_main = df_main.append(df_extend_filled, ignore_index=True)
+
+    df_main = pd.DataFrame(df_main[df_main['date'] < dt.datetime.now()]).reset_index(drop=True)
+
+    rename_dict = {'000333.SZ':'Midea_Group', '000932.SZ':'Hunan_Valin_Steel', 
+    '601899.SS': 'Zijin_Mining', '600019.SS': 'Baoshan_Iron&Steel', 
+    'AH.BK':'AAPICO_Hitech','MT':'ArcelorMittal','^TWII':'TSEC',
+    'SCHN':'Schnitzer_Steel', 'TSM':'Taiwan_Semiconductor', 'X':'US_Steel'}
+
+    for key, value in rename_dict.items():
+        df_main['variable'] = df_main['variable'].str.replace(key, value)
 
     df_main.to_csv(SAVE_PREDICTION_PATH + 'all_prediction.csv', index=False)
