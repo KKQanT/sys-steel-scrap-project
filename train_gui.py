@@ -47,8 +47,39 @@ class Train(QWidget):
                 'param_window':"168",
                 'param_n_units':"2",
                 'param_middle_dense_dim':'',
-                "param_dropout":"0",
+                "param_dropout":"",
                 'param_epochs':'100'
+            },
+            'domestic_baseline_gru_avg':{
+                'param_split_pct':"20",
+                'param_seed':"0",
+                'param_window':"168",
+                'param_n_units':"2",
+                'param_middle_dense_dim':'',
+                "param_dropout":"",
+                'param_epochs':'50'
+            },
+            'domestic_bigru_avg':{
+                'param_split_pct':"20",
+                'param_seed':"0",
+                'param_window':"168",
+                'param_n_units':"[8,8]",
+                'param_middle_dense_dim':'',
+                "param_dropout":"0",
+                'param_epochs':'300'
+            },
+            'domestic_transformerv1_avgsel':{
+                'param_split_pct':"20",
+                'param_seed':"0",
+                'param_window':"168",
+                'param_head_size':"256",
+                'param_num_heads':"4",
+                'param_ff_dim':"4",
+                'param_num_transformer_blocks':"4",
+                'param_mlp_units':"[32]",
+                "param_dropout":"0.2",
+                "param_mlp_dropout":
+
             }
         }
         self.select_model = QComboBox()

@@ -23,6 +23,8 @@ if __name__ == "__main__":
     BASE_FEATURES = ['adjusted_avg_factors']
     SEED = 0
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
+    N_UNITS = 2
+    EPOCHS = 50
 
     df = pd.read_csv(PREP_DATA_PATH)
     df['date'] = pd.to_datetime(df['date'])
@@ -48,7 +50,7 @@ if __name__ == "__main__":
 
     tf.random.set_seed(SEED)
     model = Sequential()
-    model.add(L.GRU(2, input_shape=(WINDOW, len(BASE_FEATURES),), 
+    model.add(L.GRU(N_UNITS, input_shape=(WINDOW, len(BASE_FEATURES),), 
                     return_sequences = False,
                     stateful=False,
                     go_backwards=False))
@@ -59,7 +61,7 @@ if __name__ == "__main__":
 
     model.summary()
 
-    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=50, batch_size=32, save_path=SAVE_MODEL_PATH, 
+    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=EPOCHS, batch_size=32, save_path=SAVE_MODEL_PATH, 
     save_best_only=True)
 
     model = tf.keras.models.load_model(SAVE_MODEL_PATH+f'{MODEL_NAME}.h5')

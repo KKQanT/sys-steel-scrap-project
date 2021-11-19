@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import mean_absolute_percentage_error
 import datetime as dt
+from deep_learning.taiwan_gru_baseline_avg_train import EPOCHS
 
 from validation import get_val_test_date, get_valid_target_date
 from util import make_weight_avg, windowlized
@@ -28,6 +29,8 @@ if __name__ == "__main__":
     DROPOUT = 0
 
     SEED = 0
+
+    EPOCHS = 300
 
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
 
@@ -63,7 +66,7 @@ if __name__ == "__main__":
 
     model.summary()
 
-    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=300, batch_size=32, save_path=SAVE_MODEL_PATH)
+    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=EPOCHS, batch_size=32, save_path=SAVE_MODEL_PATH)
 
     model = tf.keras.models.load_model(SAVE_MODEL_PATH+f'{MODEL_NAME}.h5')
 
