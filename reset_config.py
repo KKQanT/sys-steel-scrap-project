@@ -7,20 +7,96 @@ if __name__ == "__main__":
         "SPLIT_PCT":"20",
         "SEED": "0",
         "WINDOW":"84",
+        "DROPOUT":"0",
+        'EPOCHS':"300",
+
         "N_UNITS":"[4,4]",
         "MIDDLE_DENSE_DIM":"None",
-        "DROPOUT":"0",
-        'EPOCHS':"300"
+
+        "HEAD_SIZE":'-------',
+        "NUM_HEADS":'-------',
+        "FF_DIM":'-------',
+        "NUM_TRANSFORMER_HEADS":'-------',
+        "MLP_UNITS":'-------',
+        "MLP_DROPOUT":'-------',
+
+
     }
 
     config_object['taiwan_gru_baseline_avg'.upper()] = {
         "SPLIT_PCT":"20",
         "SEED":"0",
         "WINDOW":"168",
+        "DROPOUT":"",
+        "EPOCHS":'100',
+
         "N_UNITS":"2",
         "MIDDLE_DENSE_DIM":"",
-        "DROPOUT":"",
-        "EPOCHS":'100'
+
+        "HEAD_SIZE":'-------',
+        "NUM_HEADS":'-------',
+        "FF_DIM":'-------',
+        "NUM_TRANSFORMER_HEADS":'-------',
+        "MLP_UNITS":'-------',
+        "MLP_DROPOUT":'-------',
+
+    }
+
+    config_object['domestic_baseline_gru_avg'.upper()] = {
+        "SPLIT_PCT":"20",
+        "SEED":"0",
+        "WINDOW":"168",
+        "DROPOUT":"-------",
+        "EPOCHS":'50',
+
+        "N_UNITS":"2",
+        "MIDDLE_DENSE_DIM":"-------",
+
+        "HEAD_SIZE":'-------',
+        "NUM_HEADS":'-------',
+        "FF_DIM":'-------',
+        "NUM_TRANSFORMER_HEADS":'-------',
+        "MLP_UNITS":'-------',
+        "MLP_DROPOUT":'-------',
+
+    }
+
+    config_object['domestic_bigru_avg'.upper()] = {
+        "SPLIT_PCT":"20",
+        "SEED":"0",
+        "WINDOW":"168",
+        "DROPOUT":"0",
+        "EPOCHS":'300',
+
+        "N_UNITS":"2",
+        "MIDDLE_DENSE_DIM":"-------",
+
+        "HEAD_SIZE":'-------',
+        "NUM_HEADS":'-------',
+        "FF_DIM":'-------',
+        "NUM_TRANSFORMER_HEADS":'-------',
+        "MLP_UNITS":'-------',
+        "MLP_DROPOUT":'-------',
+
+    }
+
+    config_object['domestic_transformerv1_avgsel'.upper()] = {
+        "SPLIT_PCT":"20",
+        "SEED":"0",
+        "WINDOW":"168",
+        "DROPOUT":"0.2",
+        "EPOCHS":'500',
+
+        "N_UNITS":"-------",
+        "MIDDLE_DENSE_DIM":"-------",
+
+        "HEAD_SIZE":'256',
+        "NUM_HEADS":'4',
+        "FF_DIM":'4',
+        "NUM_TRANSFORMER_HEADS":'4',
+        "MLP_UNITS":'[32]',
+        "MLP_DROPOUT":'0.4',
+
     }
 
     with open("src/deep_learning/model_config.ini", 'w') as conf:
@@ -33,6 +109,18 @@ if __name__ == "__main__":
     }
 
     infer_config_object['taiwan_gru_baseline_avg'.upper()] = {
+        'WINDOW':"168"
+    }
+
+    infer_config_object['domestic_baseline_gru_avg'.upper()] = {
+        'WINDOW':"168"
+    }
+
+    infer_config_object['domestic_bigru_avg'.upper()] = {
+        'WINDOW':"168"
+    }
+
+    infer_config_object['domestic_transformerv1_avgsel'.upper()] = {
         'WINDOW':"168"
     }
 

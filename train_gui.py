@@ -39,46 +39,78 @@ class Train(QWidget):
                 'param_n_units':"[4,4]",
                 'param_middle_dense_dim':"None",
                 'param_dropout':"0",
-                'param_epochs':"300"
+                'param_epochs':"300",
+
+                'param_head_size':"-------",
+                'param_num_heads':"-------",
+                'param_ff_dim':"-------",
+                'param_num_transformer_blocks':"-------",
+                'param_mlp_units':"-------",
+                "param_mlp_dropout":"-------"
             },
             'taiwan_gru_baseline_avg':{
                 'param_split_pct':"20",
                 'param_seed':"0",
                 'param_window':"168",
                 'param_n_units':"2",
-                'param_middle_dense_dim':'',
+                'param_middle_dense_dim':'-------',
                 "param_dropout":"",
-                'param_epochs':'100'
+                'param_epochs':'100',
+
+                'param_head_size':"-------",
+                'param_num_heads':"-------",
+                'param_ff_dim':"-------",
+                'param_num_transformer_blocks':"-------",
+                'param_mlp_units':"-------",
+                "param_mlp_dropout":"-------"
             },
             'domestic_baseline_gru_avg':{
                 'param_split_pct':"20",
                 'param_seed':"0",
                 'param_window':"168",
                 'param_n_units':"2",
-                'param_middle_dense_dim':'',
-                "param_dropout":"",
-                'param_epochs':'50'
+                'param_middle_dense_dim':'-------',
+                "param_dropout":"-------",
+                'param_epochs':'50',
+
+                'param_head_size':"-------",
+                'param_num_heads':"-------",
+                'param_ff_dim':"-------",
+                'param_num_transformer_blocks':"-------",
+                'param_mlp_units':"-------",
+                "param_mlp_dropout":"-------"
             },
             'domestic_bigru_avg':{
                 'param_split_pct':"20",
                 'param_seed':"0",
                 'param_window':"168",
                 'param_n_units':"[8,8]",
-                'param_middle_dense_dim':'',
+                'param_middle_dense_dim':'None',
                 "param_dropout":"0",
-                'param_epochs':'300'
+                'param_epochs':'300',
+
+                'param_head_size':"-------",
+                'param_num_heads':"-------",
+                'param_ff_dim':"-------",
+                'param_num_transformer_blocks':"-------",
+                'param_mlp_units':"-------",
+                "param_mlp_dropout":"-------"
             },
             'domestic_transformerv1_avgsel':{
                 'param_split_pct':"20",
                 'param_seed':"0",
                 'param_window':"168",
+                'param_n_units':"-------",
+                'param_middle_dense_dim':'-------',
+                "param_dropout":"0.2",
+                'param_epochs':'500',
+
                 'param_head_size':"256",
                 'param_num_heads':"4",
                 'param_ff_dim':"4",
                 'param_num_transformer_blocks':"4",
                 'param_mlp_units':"[32]",
-                "param_dropout":"0.2",
-                "param_mlp_dropout":
+                "param_mlp_dropout":"0.4"
 
             }
         }
@@ -86,6 +118,9 @@ class Train(QWidget):
         self.select_model.addItems([
             'taiwan_small_bigru_avgadj2',
             'taiwan_gru_baseline_avg',
+            'domestic_baseline_gru_avg',
+            'domestic_bigru_avg',
+            'domestic_transformerv1_avgsel',
             ])
         self.select_model.currentTextChanged.connect(self.onSelectModelChanged)
         self.select_model.currentTextChanged.connect(self.updateGraph)
@@ -95,20 +130,37 @@ class Train(QWidget):
 
 
         self.param_split_pct = QLineEdit("20")
+        self.param_epochs = QLineEdit('300')
         self.param_seed = QLineEdit("0")
         self.param_window = QLineEdit("84")
+        self.param_dropout = QLineEdit('0')
+        ########## small gru #####################
         self.param_n_units = QLineEdit("[4, 4]")
         self.param_middle_dense_dim = QLineEdit("None")
-        self.param_dropout = QLineEdit('0')
-        self.param_epochs = QLineEdit('300')
+        ########## transformer ###################
+        self.param_head_size = QLineEdit('')
+        self.param_num_heads = QLineEdit('')
+        self.param_ff_dim = QLineEdit('')
+        self.param_num_transformer_blocks = QLineEdit('')
+        self.param_mlp_units = QLineEdit('')
+        self.param_mlp_dropout = QLineEdit('')
+
         param_layout = QFormLayout()
         param_layout.addRow("percentage of val+test", self.param_split_pct)
+        param_layout.addRow('epochs', self.param_epochs)
         param_layout.addRow("random seed", self.param_seed)
         param_layout.addRow("lookback window (day)", self.param_window)
+        param_layout.addRow('dropout', self.param_dropout)
+        ########## small gru #####################
         param_layout.addRow("gru units", self.param_n_units)
         param_layout.addRow("dimension of middle dense", self.param_middle_dense_dim)
-        param_layout.addRow('dropout', self.param_dropout)
-        param_layout.addRow('epochs', self.param_epochs)
+        ########## transfomer #####################
+        param_layout.addRow('head size', self.param_head_size)
+        param_layout.addRow('number of heads', self.param_num_heads)
+        param_layout.addRow('fastforward dimension', self.param_ff_dim)
+        param_layout.addRow('number of transformer blocks', self.param_num_transformer_blocks)
+        param_layout.addRow('multi layer percepton units', self.param_mlp_units)
+        param_layout.addRow('multi layer percepton dropout', self.param_mlp_dropout)
 
 
         self.df_val = pd.read_csv(f'output/{self.select_model.currentText()}_val.csv')
@@ -164,21 +216,37 @@ class Train(QWidget):
         self.param_split_pct.setText(new_params_dict['param_split_pct'])
         self.param_seed.setText(new_params_dict['param_seed'])
         self.param_window.setText(new_params_dict['param_window'])
-        self.param_n_units.setText(new_params_dict['param_n_units'])
-        self.param_middle_dense_dim.setText(new_params_dict['param_middle_dense_dim'])
         self.param_dropout.setText(new_params_dict['param_dropout'])
         self.param_epochs.setText(new_params_dict['param_epochs'])
+
+        self.param_n_units.setText(new_params_dict['param_n_units'])
+        self.param_middle_dense_dim.setText(new_params_dict['param_middle_dense_dim'])
+
+        self.param_head_size.setText(new_params_dict['param_head_size'])
+        self.param_num_heads.setText(new_params_dict['param_num_heads'])
+        self.param_ff_dim.setText(new_params_dict['param_ff_dim'])
+        self.param_num_transformer_blocks.setText(new_params_dict['param_num_transformer_blocks'])
+        self.param_mlp_units.setText(new_params_dict['param_mlp_units'])
+        self.param_mlp_dropout.setText(new_params_dict['param_mlp_dropout'])
 
     def sendConfig(self):
         parser = ConfigParser()
         parser.read('src/deep_learning/model_config.ini')
         current_model = self.select_model.currentText().upper()
-        parser.set(current_model, 'seed', self.param_seed.text())
-        parser.set(current_model, 'window', self.param_window.text())
-        parser.set(current_model, 'n_units', self.param_n_units.text())
-        parser.set(current_model, 'middel_dense_dim', self.param_middle_dense_dim.text())
-        parser.set(current_model, 'dropout', self.param_dropout.text())
-        parser.set(current_model, 'epochs', self.param_epochs.text())
+        parser.set(current_model, 'SEED', self.param_seed.text())
+        parser.set(current_model, 'WINDOW', self.param_window.text())
+        parser.set(current_model, 'DROPOUT', self.param_dropout.text())
+        parser.set(current_model, 'EPOCHS', self.param_epochs.text())
+
+        parser.set(current_model, 'N_UNITS', self.param_n_units.text())
+        parser.set(current_model, 'MIDDLE_DENSE_DIM', self.param_middle_dense_dim.text())
+
+        parser.set(current_model, 'HEAD_SIZE', self.param_head_size.text())
+        parser.set(current_model, 'NUM_HEADS', self.param_num_heads.text())
+        parser.set(current_model, 'FF_DIM', self.param_ff_dim.text())
+        parser.set(current_model, 'NUM_TRANSFORMER_HEADS', self.param_num_transformer_blocks.text())
+        parser.set(current_model, 'MLP_UNITS', self.param_mlp_units.text())
+        parser.set(current_model, 'MLP_DROPOUT', self.param_mlp_dropout.text())
 
         with open("src/deep_learning/model_config.ini", 'w') as conf:
             parser.write(conf)
