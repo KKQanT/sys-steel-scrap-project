@@ -69,8 +69,8 @@ if __name__ == '__main__':
 
     df_extend['date'] = df_infer['date'].max()
 
-    #infer_date = df_infer.loc[df_infer['Domestics price (SM)'].isna() == False]['target_date_1'].max() - dt.timedelta(days=1)
-    infer_date = df_infer.loc[df_infer['Domestics price (SM)'].isna() == False]['target_date_1'].max()
+    infer_date = df_infer.loc[df_infer['Domestics price (SM)'].isna() == False]['target_date_1'].max() - dt.timedelta(days=1)
+    #infer_date = df_infer.loc[df_infer['Domestics price (SM)'].isna() == False]['target_date_1'].max()
     features = [col for col in df_infer.columns.tolist() if col not in ['date', 'target_date_1', 'target', 'predict']]
     for col in features:
       df_infer = df_infer.rename(columns = {col : f'd_DL1_week1_to_week4_{col}'})
