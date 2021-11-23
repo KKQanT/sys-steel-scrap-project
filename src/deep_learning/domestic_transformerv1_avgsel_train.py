@@ -6,6 +6,8 @@ import pickle
 from sklearn.metrics import mean_absolute_percentage_error
 import matplotlib.pyplot as plt
 import matplotlib
+import configparser
+import ast
 
 
 from validation import get_val_test_date, get_valid_target_date
@@ -19,23 +21,38 @@ if __name__ == "__main__":
 
     PREP_DATA_PATH = '../../data/preprocessed/domestic_transformerv1_avgsel.csv'
 
-    SPLIT_PCT = 20
+    #SPLIT_PCT = 20
 
     MODEL_NAME = 'domestic_transformerv1_avgsel'
     BASE_FEATURES = ['adjusted_avg_selected_manualy']
-    WINDOW = 168
-    HEAD_SIZE = 256
-    NUM_HEADS = 4
-    FF_DIM = 4
-    NUM_TRANSFORMER_BLOCKS = 4
-    MLP_UNITS = [32]
-    DROPOUT = 0.2
-    MLP_DROPOUT = 0.4
-    SEED = 4
-    EPOCHS = 500
+    #WINDOW = 168
+    #HEAD_SIZE = 256
+    #NUM_HEADS = 4
+    #FF_DIM = 4
+    #NUM_TRANSFORMER_BLOCKS = 4
+    #MLP_UNITS = [32]
+    #DROPOUT = 0.2
+    #MLP_DROPOUT = 0.4
+    #SEED = 4
+    #EPOCHS = 500
 
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
 
+    config = configparser.ConfigParser()
+    config.read('model_config.ini')
+
+    SPLIT_PCT = float(config[MODEL_NAME.upper()]['split_pct'])
+    SEED = int(config[MODEL_NAME.upper()]['seed'])
+    WINDOW = int(config[MODEL_NAME.upper()]['window'])
+    DROPOUT = float(config[MODEL_NAME.upper()]['dropout'])
+    EPOCHS = int(config[MODEL_NAME.upper()]['epochs'])
+
+    HEAD_SIZE = int(config[MODEL_NAME.upper()]['head_size'])
+    NUM_HEADS = int(config[MODEL_NAME.upper()]['num_heads'])
+    FF_DIM = int(config[MODEL_NAME.upper()]['ff_dim'])
+    NUM_TRANSFORMER_BLOCKS = int(config[MODEL_NAME.upper()]['num_transformer_heads'])
+    MLP_UNITS = ast.literal_eval(config[MODEL_NAME.upper()]['mlp_units'])
+    MLP_DROPOUT = float(config[MODEL_NAME.upper()]['mlp_dropout'])
 
     df = pd.read_csv(PREP_DATA_PATH)
     df['date'] = pd.to_datetime(df['date'])
@@ -91,24 +108,28 @@ if __name__ == "__main__":
     df_val['predict'] = val_predict
     df_test['predict'] = test_predict
 
-    val_mape = np.round(mean_absolute_percentage_error(df_val['target'], df_val['predict'])*100, decimals=1)
-    test_mape = np.round(mean_absolute_percentage_error(df_test['target'], df_test['predict'])*100, decimals=1)
+    df_train.to_csv('../../output/domestic_transformerv1_avgsel.csv', index=False)
+    df_val.to_csv('../../output/domestic_transformerv1_avgsel.csv', index=False)
+    df_test.to_csv('../../output/domestic_transformerv1_avgsel', index=False)
 
-    matplotlib.rc('font', **{'size':30})
-
-    f,ax = plt.subplots(figsize=(40, 10))
-    plt.plot(df_train['target_date'], df_train['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
-    plt.plot(df_train['target_date'], df_train['predict'], 'x-', color=color,  linewidth=1, alpha=0.3)
-
-    plt.plot(df_val['target_date'], df_val['target'], 'x-' , color='#16A085', linewidth=3)
-    plt.plot(df_val['target_date'], df_val['predict'], 'x-', color=color,  linewidth=3)
-
-    plt.plot(df_test['target_date'], df_test['target'], 'x-', color='#16A085', linewidth=3)
-    plt.plot(df_test['target_date'], df_test['predict'], 'x-', color=color, label=f'predicted val mape: {val_mape}%, test mape: {test_mape}%', linewidth=3)
-    plt.legend()
-    plt.axvline(val_date, linestyle='dashed', color='#21618C')
-    plt.axvline(test_date, linestyle='dashed', color='#8E44AD')
-    plt.show()
+    #val_mape = np.round(mean_absolute_percentage_error(df_val['target'], df_val['predict'])*100, decimals=1)
+    #test_mape = np.round(mean_absolute_percentage_error(df_test['target'], df_test['predict'])*100, decimals=1)
+#
+    #matplotlib.rc('font', **{'size':30})
+#
+    #f,ax = plt.subplots(figsize=(40, 10))
+    #plt.plot(df_train['target_date'], df_train['target'], 'x-', color='#16A085', label='actual', linewidth=3)  
+    #plt.plot(df_train['target_date'], df_train['predict'], 'x-', color=color,  linewidth=1, alpha=0.3)
+#
+    #plt.plot(df_val['target_date'], df_val['target'], 'x-' , color='#16A085', linewidth=3)
+    #plt.plot(df_val['target_date'], df_val['predict'], 'x-', color=color,  linewidth=3)
+#
+    #plt.plot(df_test['target_date'], df_test['target'], 'x-', color='#16A085', linewidth=3)
+    #plt.plot(df_test['target_date'], df_test['predict'], 'x-', color=color, label=f'predicted val mape: {val_mape}%, test mape: {test_mape}%', linewidth=3)
+    #plt.legend()
+    #plt.axvline(val_date, linestyle='dashed', color='#21618C')
+    #plt.axvline(test_date, linestyle='dashed', color='#8E44AD')
+    #plt.show()
 
 
     
