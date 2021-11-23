@@ -298,10 +298,14 @@ class Train(QWidget):
             self.canvas.draw()
 
     def updateMape(self):
-        val_mape = np.round(mean_absolute_percentage_error(self.df_val['target'], self.df_val['predict'])*100, decimals=1)
-        test_mape = np.round(mean_absolute_percentage_error(self.df_test['target'], self.df_test['predict'])*100, decimals=1)
-        self.val_mape_text.setText(f"validatation set MAPE : {val_mape}")
-        self.test_mape_text.setText(f"test set MAPE : {test_mape}")
+        try:
+            val_mape = np.round(mean_absolute_percentage_error(self.df_val['target'], self.df_val['predict'])*100, decimals=1)
+            test_mape = np.round(mean_absolute_percentage_error(self.df_test['target'], self.df_test['predict'])*100, decimals=1)
+            self.val_mape_text.setText(f"validatation set MAPE : {val_mape}")
+            self.test_mape_text.setText(f"test set MAPE : {test_mape}")
+        except AttributeError:
+            self.val_mape_text.setText(f"validatation set MAPE : ")
+            self.test_mape_text.setText(f"test set MAPE : ")
 
     def sendInferenceCConfig(self):
         parser = ConfigParser()
