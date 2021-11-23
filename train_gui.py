@@ -162,30 +162,36 @@ class Train(QWidget):
         param_layout.addRow('multi layer percepton units', self.param_mlp_units)
         param_layout.addRow('multi layer percepton dropout', self.param_mlp_dropout)
 
+        try:
+            self.df_val = pd.read_csv(f'output/{self.select_model.currentText()}_val.csv')
+            self.df_test = pd.read_csv(f'output/{self.select_model.currentText()}_test.csv')
+            self.df_val['target_date'] = pd.to_datetime(self.df_val['target_date'])
+            self.df_test['target_date'] = pd.to_datetime(self.df_test['target_date'])
+            self.canvas = MplCanvas(self, width=5, height=3, dpi=100)
+            self.canvas.axes.plot(self.df_val['target_date'], self.df_val['target'], label='actual', color='#16A085')
+            self.canvas.axes.plot(self.df_val['target_date'], self.df_val['predict'], label='predict', color='#7D3C98')
+            self.canvas.axes.plot(self.df_test['target_date'], self.df_test['target'], color='#16A085')
+            self.canvas.axes.plot(self.df_test['target_date'], self.df_test['predict'], color='#7D3C98')
+            self.canvas.axes.legend()
+            self.canvas.axes.axvline(self.df_val['target_date'].max(), linestyle='dashed', color='red', alpha=0.5)
 
-        self.df_val = pd.read_csv(f'output/{self.select_model.currentText()}_val.csv')
-        self.df_test = pd.read_csv(f'output/{self.select_model.currentText()}_test.csv')
-        self.df_val['target_date'] = pd.to_datetime(self.df_val['target_date'])
-        self.df_test['target_date'] = pd.to_datetime(self.df_test['target_date'])
-        self.canvas = MplCanvas(self, width=5, height=3, dpi=100)
-        self.canvas.axes.plot(self.df_val['target_date'], self.df_val['target'], label='actual', color='#16A085')
-        self.canvas.axes.plot(self.df_val['target_date'], self.df_val['predict'], label='predict', color='#7D3C98')
-        self.canvas.axes.plot(self.df_test['target_date'], self.df_test['target'], color='#16A085')
-        self.canvas.axes.plot(self.df_test['target_date'], self.df_test['predict'], color='#7D3C98')
-        self.canvas.axes.legend()
-        self.canvas.axes.axvline(self.df_val['target_date'].max(), linestyle='dashed', color='red', alpha=0.5)
+            val_mape = np.round(mean_absolute_percentage_error(self.df_val['target'], self.df_val['predict'])*100, decimals=1)
+            test_mape = np.round(mean_absolute_percentage_error(self.df_test['target'], self.df_test['predict'])*100, decimals=1)
+            self.val_mape_text = QLabel(f"validatation set MAPE : {val_mape}")
+            self.test_mape_text = QLabel(f"test set MAPE : {test_mape}")
+
+        except FileNotFoundError:
+            self.canvas = MplCanvas(self, width=5, height=3, dpi=100)
+
+            self.val_mape_text = QLabel(f"validatation set MAPE : ")
+            self.test_mape_text = QLabel(f"test set MAPE : ")
+
         graph_layout = QVBoxLayout()
         graph_layout.addWidget(self.canvas)
 
-
-        val_mape = np.round(mean_absolute_percentage_error(self.df_val['target'], self.df_val['predict'])*100, decimals=1)
-        test_mape = np.round(mean_absolute_percentage_error(self.df_test['target'], self.df_test['predict'])*100, decimals=1)
-        self.val_mape_text = QLabel(f"validatation set MAPE : {val_mape}")
-        self.test_mape_text = QLabel(f"test set MAPE : {test_mape}")
         performance_layout = QVBoxLayout()
         performance_layout.addWidget(self.val_mape_text)
         performance_layout.addWidget(self.test_mape_text)
-
 
         train_button = QPushButton("train")
         train_button.clicked.connect(self.trainModel)
@@ -264,25 +270,32 @@ class Train(QWidget):
                 shell=True
             )
         process.communicate()
+        time.sleep(2)
         self.updateGraph()
         self.updateMape()
 
     def updateGraph(self):
-        
-        self.df_val = pd.read_csv(f'output/{self.select_model.currentText()}_val.csv')
-        self.df_test = pd.read_csv(f'output/{self.select_model.currentText()}_test.csv')
-        self.df_val['target_date'] = pd.to_datetime(self.df_val['target_date'])
-        self.df_test['target_date'] = pd.to_datetime(self.df_test['target_date'])
-        
-        self.canvas.axes.cla()
-        self.canvas.axes.plot(self.df_val['target_date'], self.df_val['target'], label='actual', color='#16A085')
-        self.canvas.axes.plot(self.df_val['target_date'], self.df_val['predict'], label='predict', color='#7D3C98')
-        self.canvas.axes.plot(self.df_test['target_date'], self.df_test['target'], color='#16A085')
-        self.canvas.axes.plot(self.df_test['target_date'], self.df_test['predict'], color='#7D3C98')
-        self.canvas.axes.legend()
-        self.canvas.axes.axvline(self.df_val['target_date'].max(), linestyle='dashed', color='red', alpha=0.5)
 
-        self.canvas.draw()
+        try:
+        
+            self.df_val = pd.read_csv(f'output/{self.select_model.currentText()}_val.csv')
+            self.df_test = pd.read_csv(f'output/{self.select_model.currentText()}_test.csv')
+            self.df_val['target_date'] = pd.to_datetime(self.df_val['target_date'])
+            self.df_test['target_date'] = pd.to_datetime(self.df_test['target_date'])
+            
+            self.canvas.axes.cla()
+            self.canvas.axes.plot(self.df_val['target_date'], self.df_val['target'], label='actual', color='#16A085')
+            self.canvas.axes.plot(self.df_val['target_date'], self.df_val['predict'], label='predict', color='#7D3C98')
+            self.canvas.axes.plot(self.df_test['target_date'], self.df_test['target'], color='#16A085')
+            self.canvas.axes.plot(self.df_test['target_date'], self.df_test['predict'], color='#7D3C98')
+            self.canvas.axes.legend()
+            self.canvas.axes.axvline(self.df_val['target_date'].max(), linestyle='dashed', color='red', alpha=0.5)
+
+            self.canvas.draw()
+
+        except FileNotFoundError:
+            self.canvas.axes.cla()
+            self.canvas.draw()
 
     def updateMape(self):
         val_mape = np.round(mean_absolute_percentage_error(self.df_val['target'], self.df_val['predict'])*100, decimals=1)
