@@ -10,14 +10,20 @@ import tensorflow as tf
 
 from util import make_weight_avg, window_sliding_X
 
+from configparser import ConfigParser
+
 if __name__ == "__main__":
     PREP_DATA_PATH = '../../data/preprocessed/domestic_baseline_gru_avg.csv'
     MODEL_NAME = 'domestic_baseline_gru_avg'
     SAVE_MODEL_PATH = '../../model/deep_learning/executing/'
     BASE_FEATURES = ['adjusted_avg_factors']
-    WINDOW = 168
+    #WINDOW = 168
     SAVE_PREDICTION_PATH = '../../output/'
     PLOT = False
+
+    config = ConfigParser()
+    config.read('infer_model_config.ini')
+    WINDOW = int(config[MODEL_NAME.upper()]['window'])
 
     with open(SAVE_MODEL_PATH + f'{MODEL_NAME}_val_date.pkl', 'r') as val_date_file:
         val_date = dt.datetime.strptime(val_date_file.read(), "%d-%b-%Y (%H:%M:%S.%f)")
