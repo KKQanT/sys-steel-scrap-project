@@ -31,11 +31,11 @@ if __name__ == "__main__":
     MLP_UNITS = [32]
     DROPOUT = 0.2
     MLP_DROPOUT = 0.4
-    #SEED = 3
     SEED = 4
     EPOCHS = 500
 
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
+
 
     df = pd.read_csv(PREP_DATA_PATH)
     df['date'] = pd.to_datetime(df['date'])

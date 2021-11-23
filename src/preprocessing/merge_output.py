@@ -26,6 +26,15 @@ if __name__ == "__main__":
 
     df = pd.read_csv(SAVE_PREDICTION_PATH + 't_DL1_month3.csv')
     df['date'] = pd.to_datetime(df['date'])
+
+    df_exchange = pd.read_excel('../../data/sys/Weekly scrap Price.xlsx').rename(columns = {'Date':'date'})
+    df_exchange = pd.DataFrame(df_exchange[['date', 'F/X.1']])
+    df_exchange['date'] = pd.to_datetime(df_exchange['date'])
+
+    df = pd.merge(df, df_exchange, on = ['date'], how='left')
+    df['F/X.1'] = df['F/X.1'].fillna(method = 'ffill')
+    df['t_DL1_month3_baht'] = df['t_DL1_month3']*df['F/X.1'] + 900
+    df['t_DL1_month3_pred_baht'] = df['t_DL1_month3_pred']*df['F/X.1'] + 900
     df_main_DL = pd.merge(df_main_DL, df, on = ['date'], how='left')
 
     df = pd.read_csv(SAVE_PREDICTION_PATH + 't_DL2_month3.csv')
@@ -37,11 +46,19 @@ if __name__ == "__main__":
     df_main_DL_filled['target_date'] = pd.date_range(df_main_ML['target_date'].min(), df_main_ML['target_date'].max())
     df_main_DL_filled = pd.merge(df_main_DL_filled, df_main_DL, on = ['date', 'target_date'], how='left')
 
-    for col in df_main_DL_filled.columns.tolist():
+    for col in [
+        'd_DL1_month3_pred',
+        'd_DL2_month3_pred',
+        'd_DL3_month3_pred',
+        't_DL1_month3_pred',
+        't_DL2_month3_pred',
+        't_DL1_month3_pred_baht'
+        
+    ]:
         df_main_DL_filled[col] = df_main_DL_filled[col].fillna(method='ffill')
 
     df_main = pd.merge(df_main_ML, df_main_DL_filled, on = ['date', 'target_date'], how='left')
-
+    
     df_price = pd.read_excel('../../data/sys/Data Price.xlsx')
     df_price['Date'] = pd.to_datetime(df_price['Date'])
 
@@ -157,5 +174,35 @@ if __name__ == "__main__":
 
     for key, value in rename_dict.items():
         df_main['variable'] = df_main['variable'].str.replace(key, value)
+
+    map_ = {'d_DL1_month3_pred':'d_DL1',
+    'd_DL2_month3_pred':'d_DL2',
+    'd_DL3_month3_pred':'d_DL3',
+    't_DL1_month3_pred':'t_DL1',
+    't_DL2_month3_pred':'t_DL2',
+    'd_ML_month3_pred':'d_ML',
+    't_ML_month3_pred':'t_ML',
+            
+    'd_DL1_week1_pred':'d_DL1_week1',
+    'd_DL1_week1_to_week4_pred':'d_DL1_week1_to_4',
+    'd_DL1_week1_to_month3_pred':'d_DL1_week1_to_12',
+    
+    'd_DL1_month3':'d_DL1',
+    'd_DL2_month3':'d_DL2',
+    'd_DL3_month3':'d_DL3',
+    't_DL1_month3':'t_DL1',
+    't_DL2_month3':'t_DL2',
+    'd_ML_month3':'d_ML',
+    't_ML_month3':'t_ML',
+        
+    'd_DL1_week1':'d_DL1_week1',
+    'd_DL1_week1_to_week4':'d_DL1_week1_to_4',
+    'd_DL1_week1_to_month3':'d_DL1_week1_to_12',}
+
+    df_main['model'] = df_main['variable'].map(map_)
+
+    df_result = pd.read_csv(SAVE_PREDICTION_PATH + 'test_result.csv')
+
+    df_main = pd.merge(df_main, df_result, on = ['model'], how='left')
 
     df_main.to_csv(SAVE_PREDICTION_PATH + 'all_prediction.csv', index=False)

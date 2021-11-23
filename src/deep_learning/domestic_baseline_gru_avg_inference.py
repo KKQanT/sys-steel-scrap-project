@@ -1,3 +1,4 @@
+from re import S
 import pandas as pd
 import datetime as dt
 import pickle 
@@ -16,7 +17,7 @@ if __name__ == "__main__":
     BASE_FEATURES = ['adjusted_avg_factors']
     WINDOW = 168
     SAVE_PREDICTION_PATH = '../../output/'
-    PLOT = True
+    PLOT = False
 
     with open(SAVE_MODEL_PATH + f'{MODEL_NAME}_val_date.pkl', 'r') as val_date_file:
         val_date = dt.datetime.strptime(val_date_file.read(), "%d-%b-%Y (%H:%M:%S.%f)")
@@ -49,6 +50,8 @@ if __name__ == "__main__":
     y_predict = model.predict(X_infer)
     y_predict = scaler_y.inverse_transform(y_predict)
     df_infer['predict'] = y_predict
+
+    df_infer.to_csv(SAVE_PREDICTION_PATH + 'test_result/d_DL3_month3.csv', index=False)
 
     matplotlib.rc('font', **{'size':10})
     f,ax = plt.subplots(figsize=(12, 4))

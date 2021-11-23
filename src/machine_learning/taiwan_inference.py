@@ -102,6 +102,8 @@ if __name__ == '__main__':
     prediction = model.predict(X_infer)
     df_main_features['prediction'] = prediction
 
+    df_main_features.to_csv('../../output/test_result/t_ML.csv', index=False)
+
     f,ax = plt.subplots(figsize=(13, 5))
     plt.plot(df_main_features['target_date'], df_main_features['target'],'x-', color='#138D75', label='actual')
     plt.plot(df_main_features['target_date'], df_main_features['prediction'], 'x-', color='#8E44AD', label='predict' )

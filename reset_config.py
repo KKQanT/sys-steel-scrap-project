@@ -68,8 +68,8 @@ if __name__ == "__main__":
         "DROPOUT":"0",
         "EPOCHS":'300',
 
-        "N_UNITS":"2",
-        "MIDDLE_DENSE_DIM":"-------",
+        "N_UNITS":"[8,8]",
+        "MIDDLE_DENSE_DIM":"None",
 
         "HEAD_SIZE":'-------',
         "NUM_HEADS":'-------',

@@ -114,6 +114,8 @@ if __name__ == '__main__':
                                     scale=True, pca_var=VAR)
         df_test_all = df_test_all.append(df_test,  ignore_index=True)
 
+    df_test_all.to_csv('../../output/test_result/t_ML_test.csv', index=False)
+
     #f,ax = plt.subplots(figsize=(40, 10))
     #plt.plot(df['target_date'], df['target'],'x-', color='#138D75', label='actual')
     #plt.plot(df_test_all['target_date'], df_test_all['predict'], 'x-', color='#8E44AD', label='predict' )
@@ -127,6 +129,7 @@ if __name__ == '__main__':
     df_test_all.loc[df_test_all['Container Taiwan'] >= df_test_all['target'], 'label'] = 0
     df_test_all.loc[df_test_all['Container Taiwan'] < df_test_all['predict'], 'predicted_label'] = 1
     df_test_all.loc[df_test_all['Container Taiwan'] >= df_test_all['predict'], 'predicted_label'] = 0
+
 
     df_train, df_test, model, pca, scaler = perform_pcr(df_main_features, highest_corr_features, 
                                     pd.to_datetime(external_test_date), 

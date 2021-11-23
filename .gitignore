@@ -5,6 +5,7 @@
 data/sys/
 data/preprocessed/
 output/*.csv
+output/test_result/*.csv
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

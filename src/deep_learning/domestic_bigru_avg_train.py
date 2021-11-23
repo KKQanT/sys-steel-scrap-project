@@ -11,28 +11,45 @@ from deep_learning.taiwan_gru_baseline_avg_train import EPOCHS
 from validation import get_val_test_date, get_valid_target_date
 from util import make_weight_avg, windowlized
 from modeling import build_bidirectional_gru, train_model
-
+import configparser
+import ast
 
 
 if __name__ == "__main__":
     
     PREP_DATA_PATH = '../../data/preprocessed/domestic_bigru_avg.csv'
 
-    SPLIT_PCT = 20
+    #SPLIT_PCT = 20
 
-    WINDOW = 168
+    #WINDOW = 168
 
     MODEL_NAME = 'domestic_bigru_avg'
     BASE_FEATURES = ['adjusted_avg_factors']
-    N_UNITS = [8, 8]
-    MIDDLE_DENSE_DIM = None
-    DROPOUT = 0
+    #N_UNITS = [8, 8]
+    #MIDDLE_DENSE_DIM = None
+    #DROPOUT = 0
 
-    SEED = 0
+    #SEED = 0
 
-    EPOCHS = 300
+    #EPOCHS = 300
 
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
+
+    config = configparser.ConfigParser()
+    config.read('model_config.ini')
+
+    SPLIT_PCT = float(config[MODEL_NAME.upper()]['split_pct'])
+    SEED = int(config[MODEL_NAME.upper()]['seed'])
+    WINDOW = int(config[MODEL_NAME.upper()]['window'])
+    DROPOUT = float(config[MODEL_NAME.upper()]['dropout'])
+    EPOCHS = int(config[MODEL_NAME.upper()]['epochs'])
+    
+    N_UNITS = ast.literal_eval(config[MODEL_NAME.upper()]['n_units'])
+    MIDDLE_DENSE_DIM = config[MODEL_NAME.upper()]['middle_dense_dim']
+    if str(MIDDLE_DENSE_DIM) == "None":
+      MIDDLE_DENSE_DIM = None
+    else:
+      MIDDLE_DENSE_DIM = int(MIDDLE_DENSE_DIM)
 
     df = pd.read_csv(PREP_DATA_PATH)
     df['date'] = pd.to_datetime(df['date'])

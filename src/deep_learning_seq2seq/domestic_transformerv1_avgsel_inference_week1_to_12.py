@@ -49,6 +49,8 @@ if __name__ == '__main__':
     y_predict = scaler_y.inverse_transform(y_predict)
     df_infer['predict'] = y_predict[:,0]
 
+    df_infer.to_csv(SAVE_PREDICTION_PATH + 'test_result/d_DL1_week1_to_12.csv', index=False)
+
     matplotlib.rc('font', **{'size':10})
     f,ax = plt.subplots(figsize=(10, 4))
     plt.plot(df_infer['date'], df_infer['Domestics price (SM)'], 'x-', color='#16A085', label='actual', linewidth=3)  

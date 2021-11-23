@@ -55,6 +55,7 @@ if __name__ == "__main__":
     y_predict = model.predict(X_infer)
     y_predict = scaler_y.inverse_transform(y_predict)
     df_infer['predict'] = y_predict
+    df_infer.to_csv(SAVE_PREDICTION_PATH + 'test_result/t_DL1_month3.csv', index=False)
 
     matplotlib.rc('font', **{'size':10})
     f,ax = plt.subplots(figsize=(12, 4))

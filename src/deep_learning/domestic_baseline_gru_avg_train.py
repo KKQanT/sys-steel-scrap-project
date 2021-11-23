@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import mean_absolute_percentage_error
 import datetime as dt
+import configparser
+
 
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import Sequential
@@ -17,14 +19,23 @@ from modeling import train_model
 
 if __name__ == "__main__":
     PREP_DATA_PATH = '../../data/preprocessed/domestic_baseline_gru_avg.csv'
-    SPLIT_PCT = 20
-    WINDOW = 168
+    #SPLIT_PCT = 20
+    #WINDOW = 168
     MODEL_NAME = 'domestic_baseline_gru_avg'
     BASE_FEATURES = ['adjusted_avg_factors']
-    SEED = 0
+    #SEED = 0
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
-    N_UNITS = 2
-    EPOCHS = 50
+    #N_UNITS = 2
+    #EPOCHS = 50
+
+    config = configparser.ConfigParser()
+    config.read('model_config.ini')
+
+    SPLIT_PCT = float(config[MODEL_NAME.upper()['split_pct']])
+    SEED = int(config[MODEL_NAME.upper()]['seed'])
+    WINDOW = int(config[MODEL_NAME.upper()]['window'])
+    N_UNITS = int(config[MODEL_NAME.upper()]['n_units'])
+    EPOCHS = int(config[MODEL_NAME.upper()]['epochs'])
 
     df = pd.read_csv(PREP_DATA_PATH)
     df['date'] = pd.to_datetime(df['date'])
