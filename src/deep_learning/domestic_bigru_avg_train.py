@@ -101,9 +101,8 @@ if __name__ == "__main__":
     df_val['predict'] = val_predict
     df_test['predict'] = test_predict
 
-    df_train.to_csv('../../output/domestic_bigru_avg.csv', index=False)
-    df_val.to_csv('../../output/domestic_bigru_avg.csv', index=False)
-    df_test.to_csv('../../output/domestic_bigru_avg', index=False)
+    df_val.to_csv('../../output/domestic_bigru_avg_val.csv', index=False)
+    df_test.to_csv('../../output/domestic_bigru_avg_test.csv', index=False)
 
     #val_mape = np.round(mean_absolute_percentage_error(df_val['target'], df_val['predict'])*100, decimals=1)
     #test_mape = np.round(mean_absolute_percentage_error(df_test['target'], df_test['predict'])*100, decimals=1)

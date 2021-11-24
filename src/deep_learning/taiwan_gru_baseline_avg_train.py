@@ -109,6 +109,5 @@ if __name__ == "__main__":
     #plt.axvline(test_date, linestyle='dashed', color='#8E44AD')
     #plt.show()
 
-    df_train.to_csv('../../output/taiwan_gru_baseline_avg_train.csv', index=False)
     df_val.to_csv('../../output/taiwan_gru_baseline_avg_val.csv', index=False)
     df_test.to_csv('../../output/taiwan_gru_baseline_avg_test.csv', index=False)

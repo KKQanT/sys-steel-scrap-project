@@ -1,4 +1,3 @@
-import sys
 from PyQt5.QtWidgets import QApplication, QComboBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 from configparser import ConfigParser
 import pandas as pd

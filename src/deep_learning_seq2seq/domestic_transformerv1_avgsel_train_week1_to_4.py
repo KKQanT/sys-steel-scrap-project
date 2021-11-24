@@ -5,6 +5,7 @@ from util import make_weight_avg, preprocess_target, windowlized
 import pickle
 import datetime as dt
 from modeling import train_model, build_transformerv1_model
+from tensorflow_addons.layers import MultiHeadAttention
 
 
 if __name__ == '__main__':
@@ -65,3 +66,17 @@ if __name__ == '__main__':
 
     train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=500, batch_size=32, save_path=SAVE_MODEL_PATH, save_best_only=SAVE_BEST_ONLY)
 
+    model = tf.keras.models.load_model(SAVE_MODEL_PATH+f'{MODEL_NAME}.h5', custom_objects={'MultiHeadAttention':MultiHeadAttention})
+
+    val_predict = model.predict(X_val)
+
+    test_predict = model.predict(X_test)
+
+    val_predict = scaler_y.inverse_transform(val_predict)
+    test_predict = scaler_y.inverse_transform(test_predict)
+
+    df_val['predict'] = val_predict[:,0]
+    df_test['predict'] = test_predict[:,0]
+
+    df_val.to_csv('../../output/domestic_transformerv1_avgsel_week1_to_4_val.csv', index=False)
+    df_test.to_csv('../../output/domestic_transformerv1_avgsel_week1_to_4_test.csv', index=False)

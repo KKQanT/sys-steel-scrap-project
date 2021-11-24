@@ -119,6 +119,5 @@ if __name__ == "__main__":
     #plt.axvline(test_date, linestyle='dashed', color='#8E44AD')
     #plt.savefig('../../output/output.png')
 
-    df_train.to_csv('../../output/taiwan_small_bigru_avgadj2_train.csv', index=False)
     df_val.to_csv('../../output/taiwan_small_bigru_avgadj2_val.csv', index=False)
     df_test.to_csv('../../output/taiwan_small_bigru_avgadj2_test', index=False)

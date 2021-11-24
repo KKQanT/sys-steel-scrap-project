@@ -1,6 +1,6 @@
 import pandas as pd
 import datetime as dt
-from util import preprocess_target, make_weight_avg, window_sliding_X, TargetMinMaxScaler
+from util import preprocess_target, make_weight_avg, window_sliding_X
 import pickle
 import matplotlib
 import matplotlib.pyplot as plt
@@ -15,7 +15,7 @@ if __name__ == '__main__':
     SAVE_MODEL_PATH = '../../model/deep_learning/executing/'
     WINDOW = 168
     SAVE_PREDICTION_PATH = '../../output/'
-    PLOT = True
+    PLOT = False
 
     with open(SAVE_MODEL_PATH + f'{MODEL_NAME}_val_date.pkl', 'r') as val_date_file:
         val_date = dt.datetime.strptime(val_date_file.read(), "%d-%b-%Y (%H:%M:%S.%f)")
@@ -85,4 +85,4 @@ if __name__ == '__main__':
 
     if PLOT:
         plt.show()
-        
+      

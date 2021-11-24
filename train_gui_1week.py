@@ -260,9 +260,3 @@ class Train1Week(QWidget):
 
         for file in [model_file, val_date_file, scaler_X, scaler_y]:
             shutil.copyfile(os.path.join(experiment, file), os.path.join(executing, file))
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = Train1Week()
-    window.show()
-    sys.exit(app.exec_())
