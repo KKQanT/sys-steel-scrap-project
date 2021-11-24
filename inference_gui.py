@@ -58,14 +58,24 @@ class Inference(QWidget):
         button_layout.addWidget(self.clearButton)
         button_layout.addWidget(self.okButton)
 
-        self.status = QLabel("status")
-        status_layout = QHBoxLayout()
+        self.data_detail, _ = check_files()
+
+        self.status = QLabel("files status")
+        self.file_status = QLabel("<br>".join([f"\n {k} : {v}" for (k,v) in self.data_detail.items()]))
+        status_layout = QVBoxLayout()
         status_layout.addWidget(self.status)
+        status_layout.addWidget(self.file_status)
+
+        self.checkFilesButton = QPushButton('check data files')
+        self.checkFilesButton.clicked.connect(self.onClickCheckFiles)
+        check_file_button_layout = QHBoxLayout()
+        check_file_button_layout.addWidget(self.checkFilesButton)
 
         layout = QGridLayout()
         layout.addLayout(chckbox_layout, 0, 0)
         layout.addLayout(status_layout, 0, 1)
         layout.addLayout(button_layout, 1, 0)
+        layout.addLayout(check_file_button_layout, 1, 1)
 
         self.setLayout(layout)
 
@@ -89,64 +99,51 @@ class Inference(QWidget):
 
     def onClickOkButton(self):
         if self.update_stooq_chkbox.isChecked():
-            self.status.setText('updating steel lme . . .')
             process = subprocess.Popen(['update_steel_lme.bat'])
             process.communicate()
-            self.status.setText('updating steel lme . . . done')
 
         if self.update_yahoo_chkbox.isChecked():
-            self.status.setText('downloading yahoo stock price . . .')
             process = subprocess.Popen(['yahoo_downloading.bat'])
             process.communicate()
 
             for i in range(5):
 
-                self.status.setText('checking yahoos file . . .')
-                data_detail, yahoo_file_completed = check_files()
+                self.data_detail, yahoo_file_completed = check_files()
                 if yahoo_file_completed == True:
                     break
                 else:
-                    self.status.setText(f'downloading yahoo stock price . . . {i}/5')
                     process = subprocess.Popen(['yahoo_downloading.bat'])
                     process.communicate()
 
-            self.status.setText('downloading yahoo stock price . . . done')
+            self.file_status.setText("<br>".join([f"\n {k} : {v}" for (k,v) in self.data_detail.items()]))
 
         if self.inference_ml.isChecked() or self.inference_dl_3month.isChecked() or self.inference_dl_1week.isChecked() or self.inference_dl_seq2seq.isChecked():
-            self.status.setText('preprocessing target data . . .')
             process = subprocess.Popen(['preprocessing.bat'])
             process.communicate()
-            self.status.setText('preprocessing target data . . .done')
 
         if self.inference_ml.isChecked():
-            self.status.setText('machine learning model is forecasting scrap price at the next 3months . . .')
             process = subprocess.Popen(['ml_inference.bat'])
             process.communicate()
-            self.status.setText('machine learning forecasting scrap price at the next 3months . . . done')
 
         if self.inference_dl_3month.isChecked():
-            self.status.setText('deep learning model is forecasting scrap price at the next 3months . . .')
             process = subprocess.Popen(['inference_dl_3month.bat'])
             process.communicate()
-            self.status.setText('deep learning model is forecasting scrap price at the next 3months . . . done')
 
         if self.inference_dl_1week.isChecked():
-            self.status.setText('deep learning model is forecasting domestic scrap price at the next week . . .')
             process = subprocess.Popen(['inference_dl_1week.bat'])
             process.communicate()
-            self.status.setText('deep learning model is forecasting domestic scrap price at the next week . . . Done')
 
         if self.inference_dl_seq2seq.isChecked():
-            self.status.setText('deep learning model is forecasting domestic scrap price at 1week to 4/12 weeks . . .')
             process = subprocess.Popen(['inference_dl_seq2seq.bat'])
             process.communicate()
-            self.status.setText('deep learning model is forecasting domestic scrap price at 1week to 4/12 weeks . . . Done')
 
         if self.merge_output.isChecked():
-            self.status.setText('preprocessing data for tableau . . .')
             process = subprocess.Popen(['merge_output.bat'])
             process.communicate()
-            self.status.setText('preprocessing data for tableau . . . done')
+
+    def onClickCheckFiles(self):
+        self.data_detail, _ = check_files()
+        self.file_status.setText("<br>".join([f"\n {k} : {v}" for (k,v) in self.data_detail.items()]))
 
 def check_files():
 
