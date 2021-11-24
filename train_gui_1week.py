@@ -263,6 +263,6 @@ class Train1Week(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = Train1week()
+    window = Train1Week()
     window.show()
     sys.exit(app.exec_())
