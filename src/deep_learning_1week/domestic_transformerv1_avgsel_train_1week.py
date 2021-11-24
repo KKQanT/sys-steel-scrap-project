@@ -12,24 +12,42 @@ from modeling import build_transformerv1_model, train_model
 from validation import get_val_test_date, get_valid_target_date
 from util import make_weight_avg, windowlized
 
+import configparser 
+
 
 if __name__ == "__main__":
 
     PREP_DATA_PATH = '../../data/preprocessed/domestic_transformerv1_avgsel_1week.csv'
 
-    SPLIT_PCT = 20
+    #SPLIT_PCT = 20
 
     MODEL_NAME = 'domestic_transformerv1_avgsel_1week'
     BASE_FEATURES = ['adjusted_avg_selected_manualy']
-    WINDOW = 168
-    HEAD_SIZE = 256
-    NUM_HEADS = 4
-    FF_DIM = 4
-    NUM_TRANSFORMER_BLOCKS = 4
-    MLP_UNITS = [32]
-    DROPOUT = 0.2
-    MLP_DROPOUT = 0.4
-    SEED = 0
+    #WINDOW = 168
+    #HEAD_SIZE = 256
+    #NUM_HEADS = 4
+    #FF_DIM = 4
+    #NUM_TRANSFORMER_BLOCKS = 4
+    #MLP_UNITS = [32]
+    #DROPOUT = 0.2
+    #MLP_DROPOUT = 0.4
+    #SEED = 0
+
+    config = configparser.ConfigParser()
+    config.read('model_config.ini')
+    
+    SPLIT_PCT = float(config[MODEL_NAME.upper()]['split_pct'])
+    SEED = int(config[MODEL_NAME.upper()]['seed'])
+    WINDOW = int(config[MODEL_NAME.upper()]['window'])
+    DROPOUT = float(config[MODEL_NAME.upper()]['dropout'])
+    EPOCHS = int(config[MODEL_NAME.upper()]['epochs'])
+
+    HEAD_SIZE = int(config[MODEL_NAME.upper()]['head_size'])
+    NUM_HEADS = int(config[MODEL_NAME.upper()]['num_heads'])
+    FF_DIM = int(config[MODEL_NAME.upper()]['ff_dim'])
+    NUM_TRANSFORMER_BLOCKS = int(config[MODEL_NAME.upper()]['num_transformer_heads'])
+    MLP_UNITS = ast.literal_eval(config[MODEL_NAME.upper()]['mlp_units'])
+    MLP_DROPOUT = float(config[MODEL_NAME.upper()]['mlp_dropout'])
 
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
 

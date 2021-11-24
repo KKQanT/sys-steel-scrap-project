@@ -100,7 +100,7 @@ if __name__ == "__main__":
     }
 
     with open("src/deep_learning/model_config.ini", 'w') as conf:
-            config_object.write(conf)
+        config_object.write(conf)
 
     infer_config_object = ConfigParser()
     
@@ -125,4 +125,39 @@ if __name__ == "__main__":
     }
 
     with open("src/deep_learning/infer_model_config.ini", 'w') as conf:
-            infer_config_object.write(conf)
+        infer_config_object.write(conf)
+
+    config_object = ConfigParser()
+
+    config_object['domestic_transformerv1_avgsel_1week'.upper()] = {
+        "SPLIT_PCT":"20",
+        "SEED": "0",
+        "WINDOW":"168",
+        "DROPOUT":"0.2",
+        'EPOCHS':"500",
+
+        "N_UNITS":"------------",
+        "MIDDLE_DENSE_DIM":"-----------",
+
+        "HEAD_SIZE":'256',
+        "NUM_HEADS":'4',
+        "FF_DIM":'4',
+        "NUM_TRANSFORMER_HEADS":'4',
+        "MLP_UNITS":'[32]',
+        "MLP_DROPOUT":'0.4',
+
+
+    }
+
+    with open("src/deep_learning_1week/model_config.ini", 'w') as conf:
+        config_object.write(conf)
+
+    infer_config_object = ConfigParser()
+
+    infer_config_object['domestic_transformerv1_avgsel_1week'.upper()] = {
+        "WINDOW":"168"
+    } 
+
+    with open("src/deep_learning_1week/infer_model_config.ini", 'w') as conf:
+        infer_config_object.write(conf)
+    
