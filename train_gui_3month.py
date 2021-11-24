@@ -26,7 +26,7 @@ class MplCanvas(FigureCanvasQTAgg):
         self.axes = fig.add_subplot(111)
         super(MplCanvas, self).__init__(fig)
 
-class Train(QWidget):
+class Train3Months(QWidget):
 
     def __init__(self):
         super().__init__()
@@ -330,9 +330,3 @@ class Train(QWidget):
 
         for file in [model_file, val_date_file, scaler_X, scaler_y]:
             shutil.copyfile(os.path.join(experiment, file), os.path.join(executing, file))
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = Train()
-    window.show()
-    sys.exit(app.exec_())

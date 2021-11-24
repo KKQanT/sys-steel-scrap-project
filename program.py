@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QGridLayout, QTabWidget, QWidget
 from inference_gui import Inference
-from train_gui import Train
+from train_gui_3month import Train3Months
 
 class TabWidget(QWidget):
 
@@ -13,27 +13,18 @@ class TabWidget(QWidget):
         self.setWindowIcon(QIcon('smc_logo.png'))
         
         self.Inference = Inference()
-        self.Train = Train()
+        self.Train3Months = Train3Months()
 
         Tab = QTabWidget()
         Tab.addTab(self.Inference, 'Inference')
-        Tab.addTab(self.Train, 'Train')
+        Tab.addTab(self.Train3Months, 'Train3Months')
 
         layout = QGridLayout()
         layout.addWidget(Tab)
         self.setLayout(layout)
 
-stylesheet = """
-    MainWindow {
-        background-image: url("C:/Users/Peerakarn/Desktop/smc_model/sys_steel_scrap_project/smc_logo.png"); 
-        background-repeat: repeat; 
-        background-position: center;
-    }
-"""
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setStyleSheet(stylesheet)
     window = TabWidget()
     window.show()
     sys.exit(app.exec_())
