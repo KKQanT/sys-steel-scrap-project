@@ -216,3 +216,14 @@ if __name__ == "__main__":
 
     with open("src/deep_learning_seq2seq/infer_model_config.ini", 'w') as conf:
         infer_config_object.write(conf)
+
+    
+    config_object = ConfigParser()
+
+    config_object['domestic'.upper()] = {
+        'SPLIT_PCT':"20",
+        "WINDOW":"24",
+        "THRESHOLD":'0.7',
+        "STD":"0.1",
+        "VAR":"0.97"
+     }

@@ -169,4 +169,7 @@ if __name__ == '__main__':
     for _, (fold_date, _) in test_fold.items():
         plt.axvline(fold_date, linestyle='dashed', alpha=0.5, color='#D68910')
     plt.axvline(pd.to_datetime(external_test_date), linestyle='dashed', alpha=1, color='red')
-    plt.show()
+    #plt.show()
+
+    df_test_all.to_csv('../../output/t_ml_test_all.csv', index=False)
+    df_test.to_csv('../../output/t_ml_test.csv', index=False)

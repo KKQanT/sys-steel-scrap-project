@@ -171,4 +171,7 @@ if __name__ == '__main__':
     plt.plot(df_test['target_date'], df_test['predict'], 'x-', color='#8E44AD', label='predict' )
     plt.axvline(pd.to_datetime(external_test_date), linestyle='dashed', alpha=1, color='red')
     plt.title('Domestic')
-    plt.show()
+    #plt.show()
+
+    df_test_all.to_csv('../../output/d_ml_test_all.csv', index=False)
+    df_test.to_csv('../../output/d_ml_test.csv', index=False)
