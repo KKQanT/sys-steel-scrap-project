@@ -182,5 +182,5 @@ if __name__ == '__main__':
     plt.axvline(pd.to_datetime(external_test_date), linestyle='dashed', alpha=1, color='red')
     #plt.show()
 
-    df_test_all.to_csv('../../output/t_ml_test_all.csv', index=False)
-    df_test.to_csv('../../output/t_ml_test.csv', index=False)
+    df_test_all.to_csv('../../output/taiwan_ml_test_all.csv', index=False)
+    df_test.to_csv('../../output/taiwan_ml_test.csv', index=False)

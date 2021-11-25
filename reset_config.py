@@ -228,7 +228,7 @@ if __name__ == "__main__":
         "VAR":"0.97"
      }
 
-    config_object['domestic'.upper()] = {
+    config_object['taiwan'.upper()] = {
         'SPLIT_PCT':"20",
         "WINDOW":"24",
         "THRESHOLD":'0.7',

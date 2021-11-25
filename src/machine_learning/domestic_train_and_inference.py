@@ -184,5 +184,5 @@ if __name__ == '__main__':
     plt.title('Domestic')
     #plt.show()
 
-    df_test_all.to_csv('../../output/d_ml_test_all.csv', index=False)
-    df_test.to_csv('../../output/d_ml_test.csv', index=False)
+    df_test_all.to_csv('../../output/domestic_ml_test_all.csv', index=False)
+    df_test.to_csv('../../output/domestic_ml_test.csv', index=False)
