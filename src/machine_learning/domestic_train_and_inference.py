@@ -137,13 +137,13 @@ if __name__ == '__main__':
             df_test_all = df_test_all.append(df_test,  ignore_index=True)
         except NullTestSet:
             continue
-    
-    df_test_all.to_csv('../../output/test_result/d_ML_test.csv', index=False)
 
     df_train, df_test, model, pca, scaler = perform_pcr(df_main_features, highest_corr_features, 
                                     pd.to_datetime(external_test_date), 
                                     df['target_date'].max(),
                                     scale=True, pca_var=VAR)
+    
+    df_test.to_csv('../../output/test_result/d_ML_test.csv', index=False)
 
 
     with open(SAVE_MODEL_PATH + 'domestic_regression.pkl', 'wb') as model_file:
