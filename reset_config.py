@@ -227,3 +227,27 @@ if __name__ == "__main__":
         "STD":"0.1",
         "VAR":"0.97"
      }
+
+    config_object['domestic'.upper()] = {
+        'SPLIT_PCT':"20",
+        "WINDOW":"24",
+        "THRESHOLD":'0.7',
+        "STD":"0.1",
+        "VAR":"0.95"
+     }
+
+    with open("src/machine_learning/model_config.ini", 'w') as conf:
+        config_object.write(conf)
+
+    infer_config_object = ConfigParser()
+
+    infer_config_object['domestic'.upper()] = {
+        "WINDOW":"24",
+     }
+
+    infer_config_object['taiwan'.upper()] = {
+        'WINDOW':"24"
+    }
+
+    with open("src/machine_learning/infer_model_config.ini", 'w') as conf:
+        infer_config_object.write(conf)

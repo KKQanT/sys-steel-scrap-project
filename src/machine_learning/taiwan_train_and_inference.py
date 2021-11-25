@@ -8,17 +8,28 @@ from timeseries_features_engineering import *
 from features_selection import selected_highest_corr
 from model import perform_pcr
 
+import configparser
+
 if __name__ == '__main__':
 
     TAIWAN_PREP_PATH = '../../data/preprocessed/taiwan_prep.csv'
-    SPLIT_PCT = 20
-    WINDOW = 24
-
-    THRESHOLD = 0.7
-    STD = 0.1
-    VAR = 0.95
+    #SPLIT_PCT = 20
+    #WINDOW = 24
+#
+    #THRESHOLD = 0.7
+    #STD = 0.1
+    #VAR = 0.95
 
     SAVE_MODEL_PATH = '../../model/machine_learning/experiment/'
+
+    config = configparser.ConfigParser()
+    config.read('model_config.ini')
+
+    SPLIT_PCT = float(config['taiwan'.upper()]['split_pct'])
+    WINDOW = int(config['taiwan'.upper()]['window'])
+    THRESHOLD = float(config['taiwan'.upper()]['threshold'])
+    STD = float(config['taiwan'.upper()]['std'])
+    VAR = float(config['taiwan'.upper()]['var'])
 
 
     df = pd.read_csv(TAIWAN_PREP_PATH)

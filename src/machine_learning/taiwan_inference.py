@@ -25,10 +25,14 @@ if __name__ == '__main__':
     matplotlib.rc('font', **{'size':15})
 
     TAIWAN_PREP_PATH = '../../data/preprocessed/taiwan_prep.csv'
-    WINDOW = 24
+    #WINDOW = 24
     SAVE_MODEL_PATH = '../../model/machine_learning/executing/'
     SAVE_FILE_PATH = '../../output/'
     PLOT = False
+
+    config = ConfigParser()
+    config.read('infer_model_config.ini')
+    WINDOW = int(config['taiwan'.upper()]['window'])
 
     df = pd.read_csv(TAIWAN_PREP_PATH)
     df['date'] = pd.to_datetime(df['date'])

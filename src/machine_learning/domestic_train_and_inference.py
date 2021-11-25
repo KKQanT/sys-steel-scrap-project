@@ -11,6 +11,8 @@ from validation import get_val_test_date, walking_forward_fold
 from timeseries_features_engineering import *
 from features_selection import selected_highest_corr
 from model import perform_pcr
+import configparser
+
 
 class NullTestSet(Exception):
     pass
@@ -20,14 +22,23 @@ if __name__ == '__main__':
     matplotlib.rc('font', **{'size':15})
 
     DOMESTIC_PREP_PATH = '../../data/preprocessed/domestic_prep.csv'
-    SPLIT_PCT = 20
-    WINDOW = 24
-
-    THRESHOLD = 0.7
-    STD = 0.1
-    VAR = 0.97
+    #SPLIT_PCT = 20
+    #WINDOW = 24
+#
+    #THRESHOLD = 0.7
+    #STD = 0.1
+    #VAR = 0.97
 
     SAVE_MODEL_PATH = '../../model/machine_learning/experiment/'
+
+    config = configparser.ConfigParser()
+    config.read('model_config.ini')
+
+    SPLIT_PCT = float(config['domestic'.upper()]['split_pct'])
+    WINDOW = int(config['domestic'.upper()]['window'])
+    THRESHOLD = float(config['domestic'.upper()]['threshold'])
+    STD = float(config['domestic'.upper()]['std'])
+    VAR = float(config['domestic'.upper()]['var'])
 
 
     df = pd.read_csv(DOMESTIC_PREP_PATH)

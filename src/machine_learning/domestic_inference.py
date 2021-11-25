@@ -9,16 +9,20 @@ import matplotlib.pyplot as plt
 import pandas_ta as pta
 
 from timeseries_features_engineering import *
-
+from configparser import ConfigParser
 
 if __name__ == '__main__':
 
     matplotlib.rc('font', **{'size':15})
     DOMESTIC_PREP_PATH = '../../data/preprocessed/domestic_prep.csv'
-    WINDOW = 24
+    #WINDOW = 24
     SAVE_MODEL_PATH = '../../model/machine_learning/executing/'
     SVAE_FILE_PATH = '../../output/'
     PLOT = False
+
+    config = ConfigParser()
+    config.read('infer_model_config.ini')
+    WINDOW = int(config['domestic'.upper()]['window'])
 
     df = pd.read_csv(DOMESTIC_PREP_PATH)
     df['date'] = pd.to_datetime(df['date'])

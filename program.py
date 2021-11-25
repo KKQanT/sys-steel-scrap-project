@@ -5,6 +5,7 @@ from inference_gui import Inference
 from train_gui_3month import Train3Months
 from train_gui_1week import Train1Week
 from train_gui_seq2seq import TrainSeq2Seq
+from train_gui_ML import Tr
 
 class TabWidget(QWidget):
 
