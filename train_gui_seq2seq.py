@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QComboBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QComboBox, QFormLayout, QGridLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 from configparser import ConfigParser
 import pandas as pd
 import numpy as np
@@ -109,3 +109,149 @@ class TrainSeq2Seq(QWidget):
         param_layout.addRow('number of transformer blocks', self.param_num_transformer_blocks)
         param_layout.addRow('multi layer percepton units', self.param_mlp_units)
         param_layout.addRow('multi layer percepton dropout', self.param_mlp_dropout)
+
+        try:
+            self.df_val = pd.read_csv(f'output/{self.select_model.currentText()}_val.csv')
+            self.df_test = pd.read_csv(f'output/{self.select_model.currentText()}_test.csv')
+            self.df_val['target_date'] = pd.to_datetime(self.df_val['target_date'])
+            self.df_test['target_date'] = pd.to_datetime(self.df_test['target_date'])
+            self.canvas = MplCanvas(self, width=5, height=3, dpi=100)
+            self.canvas.axes.plot(self.df_val['target_date'], self.df_val['target'], label='actual', color='#16A085')
+            self.canvas.axes.plot(self.df_val['target_date'], self.df_val['predict'], label='predict', color='#7D3C98')
+            self.canvas.axes.plot(self.df_test['target_date'], self.df_test['target'], color='#16A085')
+            self.canvas.axes.plot(self.df_test['target_date'], self.df_test['predict'], color='#7D3C98')
+            self.canvas.axes.legend()
+            self.canvas.axes.axvline(self.df_val['target_date'].max(), linestyle='dashed', color='red', alpha=0.5)
+
+            val_mape = np.round(mean_absolute_percentage_error(self.df_val['target'], self.df_val['predict'])*100, decimals=1)
+            test_mape = np.round(mean_absolute_percentage_error(self.df_test['target'], self.df_test['predict'])*100, decimals=1)
+            self.val_mape_text = QLabel(f"validatation set MAPE : {val_mape}")
+            self.test_mape_text = QLabel(f"test set MAPE : {test_mape}")
+
+        except FileNotFoundError:
+            self.canvas = MplCanvas(self, width=5, height=3, dpi=100)
+
+            self.val_mape_text = QLabel(f"validatation set MAPE : ")
+            self.test_mape_text = QLabel(f"test set MAPE : ")
+
+        graph_layout = QVBoxLayout()
+        graph_layout.addWidget(self.canvas)
+
+        performance_layout = QVBoxLayout()
+        performance_layout.addWidget(self.val_mape_text)
+        performance_layout.addWidget(self.test_mape_text)
+
+        train_button = QPushButton("train")
+        train_button.clicked.connect(self.trainModel)
+        train_layout = QVBoxLayout()
+        train_layout.addWidget(train_button)
+
+        migration_button = QPushButton("replace previous model")
+        migration_button.clicked.connect(self.sendInferenceCConfig)
+        migration_button.clicked.connect(self.migrateModel)
+        migration_button_layout = QVBoxLayout()
+        migration_button_layout.addWidget(migration_button)
+
+        layout = QGridLayout()
+        layout.addLayout(graph_layout, 0, 0)
+        layout.addLayout(performance_layout, 1, 0)
+        layout.addLayout(migration_button_layout, 2, 0)
+        layout.addLayout(select_model_layout, 0, 1)
+        layout.addLayout(param_layout, 1, 1)
+        layout.addLayout(train_layout, 2, 1)
+        self.setLayout(layout)
+
+    def onSelectModelChanged(self, value):
+        new_model = self.select_model.currentText()
+        
+        new_params_dict = self.defaults_params_dicts[new_model]
+
+        self.param_split_pct.setText(new_params_dict['param_split_pct'])
+        self.param_seed.setText(new_params_dict['param_seed'])
+        self.param_window.setText(new_params_dict['param_window'])
+        self.param_dropout.setText(new_params_dict['param_dropout'])
+        self.param_epochs.setText(new_params_dict['param_epochs'])
+
+        self.param_n_units.setText(new_params_dict['param_n_units'])
+        self.param_middle_dense_dim.setText(new_params_dict['param_middle_dense_dim'])
+
+        self.param_head_size.setText(new_params_dict['param_head_size'])
+        self.param_num_heads.setText(new_params_dict['param_num_heads'])
+        self.param_ff_dim.setText(new_params_dict['param_ff_dim'])
+        self.param_num_transformer_blocks.setText(new_params_dict['param_num_transformer_blocks'])
+        self.param_mlp_units.setText(new_params_dict['param_mlp_units'])
+        self.param_mlp_dropout.setText(new_params_dict['param_mlp_dropout'])
+
+    def trainModel(self):
+
+        self.sendConfig()
+
+        time.sleep(2)
+
+        subprocess.call('preprocessing.bat', shell=True)
+        process = subprocess.Popen(
+                [f'{self.select_model.currentText()}_train.bat'],
+                cwd='src/deep_learning_seq2seq/',
+                shell=True
+            )
+        process.communicate()
+        time.sleep(2)
+        self.updateGraph()
+        self.updateMape()
+
+    def updateGraph(self):
+
+        try:
+        
+            self.df_val = pd.read_csv(f'output/{self.select_model.currentText()}_val.csv')
+            self.df_test = pd.read_csv(f'output/{self.select_model.currentText()}_test.csv')
+            self.df_val['target_date'] = pd.to_datetime(self.df_val['target_date'])
+            self.df_test['target_date'] = pd.to_datetime(self.df_test['target_date'])
+            
+            self.canvas.axes.cla()
+            self.canvas.axes.plot(self.df_val['target_date'], self.df_val['target'], label='actual', color='#16A085')
+            self.canvas.axes.plot(self.df_val['target_date'], self.df_val['predict'], label='predict', color='#7D3C98')
+            self.canvas.axes.plot(self.df_test['target_date'], self.df_test['target'], color='#16A085')
+            self.canvas.axes.plot(self.df_test['target_date'], self.df_test['predict'], color='#7D3C98')
+            self.canvas.axes.legend()
+            self.canvas.axes.axvline(self.df_val['target_date'].max(), linestyle='dashed', color='red', alpha=0.5)
+
+            self.canvas.draw()
+
+        except FileNotFoundError:
+            self.canvas.axes.cla()
+            self.canvas.draw()
+
+    def updateMape(self):
+        try:
+            val_mape = np.round(mean_absolute_percentage_error(self.df_val['target'], self.df_val['predict'])*100, decimals=1)
+            test_mape = np.round(mean_absolute_percentage_error(self.df_test['target'], self.df_test['predict'])*100, decimals=1)
+            self.val_mape_text.setText(f"validatation set MAPE : {val_mape}")
+            self.test_mape_text.setText(f"test set MAPE : {test_mape}")
+        except AttributeError:
+            self.val_mape_text.setText(f"validatation set MAPE : ")
+            self.test_mape_text.setText(f"test set MAPE : ")
+
+    def sendInferenceCConfig(self):
+        parser = ConfigParser()
+        parser.read('src/deep_learning_seq2seq/model_config.ini')
+        current_model = self.select_model.currentText().upper()
+        WINDOW = parser[current_model]['window']
+        infer_parser = ConfigParser()
+        infer_parser.read('src/deep_learning_seq2seq/infer_model_config.ini')
+        infer_parser.set(current_model, 'window', WINDOW)
+        with open("src/deep_learning_seq2seq/infer_model_config.ini", 'w') as conf:
+            infer_parser.write(conf)
+
+    def migrateModel(self):
+        current_model = self.select_model.currentText()
+        experiment = 'model/deep_learning_seq2seq/experiment/'
+        executing = 'model/deep_learning_seq2seq/executing/'
+        
+        model_file = f'{current_model}.h5'
+        val_date_file = f'{current_model}_val_date.pkl'
+        scaler_X = f'{current_model}_scaler_X.pkl'
+        scaler_y = f'{current_model}_scaler_y.pkl'
+
+        for file in [model_file, val_date_file, scaler_X, scaler_y]:
+            shutil.copyfile(os.path.join(experiment, file), os.path.join(executing, file))

@@ -6,23 +6,41 @@ import pickle
 import datetime as dt
 from modeling import train_model, build_transformerv1_model
 from tensorflow_addons.layers import MultiHeadAttention
+import configparser
+import ast
 
 if __name__ == "__main__":
     PREP_DATA_PATH = '../../data/preprocessed/domestic_transformerv1_avgsel_week1_to_12.csv'
-    SPLIT_PCT = 20
-    WINDOW = 168
+    #SPLIT_PCT = 20
+    #WINDOW = 168
     BASE_FEATURES = ['adjusted_avg_selected_manualy']
     MODEL_NAME = 'domestic_transformerv1_avgsel_week1_to_12'
     SAVE_MODEL_PATH = '../../model/deep_learning/experiment/'
 
-    HEAD_SIZE = 256
-    NUM_HEADS = 4
-    FF_DIM = 4
-    NUM_TRANSFORMER_BLOCKS = 4
-    MLP_UNITS = [32]
-    DROPOUT = 0.2
-    MLP_DROPOUT = 0.4
-    SEED = 5
+    #HEAD_SIZE = 256
+    #NUM_HEADS = 4
+    #FF_DIM = 4
+    #NUM_TRANSFORMER_BLOCKS = 4
+    #MLP_UNITS = [32]
+    #DROPOUT = 0.2
+    #MLP_DROPOUT = 0.4
+    #SEED = 5
+
+    config = configparser.ConfigParser()
+    config.read('model_config.ini')
+    
+    SPLIT_PCT = float(config[MODEL_NAME.upper()]['split_pct'])
+    SEED = int(config[MODEL_NAME.upper()]['seed'])
+    WINDOW = int(config[MODEL_NAME.upper()]['window'])
+    DROPOUT = float(config[MODEL_NAME.upper()]['dropout'])
+    EPOCHS = int(config[MODEL_NAME.upper()]['epochs'])
+
+    HEAD_SIZE = int(config[MODEL_NAME.upper()]['head_size'])
+    NUM_HEADS = int(config[MODEL_NAME.upper()]['num_heads'])
+    FF_DIM = int(config[MODEL_NAME.upper()]['ff_dim'])
+    NUM_TRANSFORMER_BLOCKS = int(config[MODEL_NAME.upper()]['num_transformer_heads'])
+    MLP_UNITS = ast.literal_eval(config[MODEL_NAME.upper()]['mlp_units'])
+    MLP_DROPOUT = float(config[MODEL_NAME.upper()]['mlp_dropout'])
 
     SAVE_BEST_ONLY = False
 
@@ -63,7 +81,7 @@ if __name__ == "__main__":
 
     model.summary()
 
-    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=500, batch_size=32, save_path=SAVE_MODEL_PATH, save_best_only=SAVE_BEST_ONLY)
+    train_model(X_train, y_train, X_val, y_val, model, MODEL_NAME, epochs=EPOCHS, batch_size=32, save_path=SAVE_MODEL_PATH, save_best_only=SAVE_BEST_ONLY)
 
     model = tf.keras.models.load_model(SAVE_MODEL_PATH+f'{MODEL_NAME}.h5', custom_objects={'MultiHeadAttention':MultiHeadAttention})
 
@@ -76,6 +94,12 @@ if __name__ == "__main__":
 
     df_val['predict'] = val_predict[:,0]
     df_test['predict'] = test_predict[:,0]
+
+    df_val['target'] = df_val['target'].apply(lambda x : x[0])
+    df_test['target'] = df_test['target'].apply(lambda x : x[0])
+
+    df_val = df_val.rename(columns={'target_date_1':'target_date'})
+    df_test = df_test.rename(columns={'target_date_1':'target_date'})
 
     df_val.to_csv('../../output/domestic_transformerv1_avgsel_week1_to_12_val.csv', index=False)
     df_test.to_csv('../../output/domestic_transformerv1_avgsel_week1_to_12_test.csv', index=False)

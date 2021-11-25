@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 
 from util import make_weight_avg, window_sliding_X
 
+from configparser import ConfigParser
+
 if __name__ == "__main__":
     PREP_DATA_PATH = '../../data/preprocessed/domestic_transformerv1_avgsel_1week.csv'
     MODEL_NAME = 'domestic_transformerv1_avgsel_1week'

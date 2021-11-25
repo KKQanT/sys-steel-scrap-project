@@ -6,20 +6,24 @@ import matplotlib
 import matplotlib.pyplot as plt
 from tensorflow_addons.layers import MultiHeadAttention
 import tensorflow as tf
-
+from configparser import ConfigParser
 
 if __name__ == '__main__':
     PREP_DATA_PATH = '../../data/preprocessed/domestic_transformerv1_avgsel_week1_to_4.csv'
     BASE_FEATURES = ['adjusted_avg_selected_manualy']
     MODEL_NAME = 'domestic_transformerv1_avgsel_week1_to_4'
     SAVE_MODEL_PATH = '../../model/deep_learning/executing/'
-    WINDOW = 168
+    #WINDOW = 168
     SAVE_PREDICTION_PATH = '../../output/'
     PLOT = False
 
     with open(SAVE_MODEL_PATH + f'{MODEL_NAME}_val_date.pkl', 'r') as val_date_file:
         val_date = dt.datetime.strptime(val_date_file.read(), "%d-%b-%Y (%H:%M:%S.%f)")
         val_date = pd.to_datetime(val_date)
+
+    config = ConfigParser()
+    config.read('infer_model_config.ini')
+    WINDOW = int(config[MODEL_NAME.upper()]['window'])
 
     df = pd.read_csv(PREP_DATA_PATH)
     df['date'] = pd.to_datetime(df['date'])
