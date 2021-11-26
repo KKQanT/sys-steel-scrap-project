@@ -177,8 +177,7 @@ class TrainML(QWidget):
         
             self.df_test_all = pd.read_csv(f'output/{self.select_model.currentText()}_ml_test_all.csv')
             df_test = pd.read_csv(f'output/{self.select_model.currentText()}_ml_test.csv')
-            
-            
+                        
             self.canvas.axes.cla()
 
             self.df_test_all['target_date'] = pd.to_datetime(self.df_test_all['target_date'])
@@ -186,7 +185,6 @@ class TrainML(QWidget):
             df_test = pd.DataFrame(df_test[['target_date', 'target', 'predict']]).dropna()
             self.df_test = df_test
             
-            self.canvas = MplCanvas(self, width=7, height=3, dpi=100)
             self.canvas.axes.plot(self.df_test_all['target_date'], self.df_test_all['target'], label='actual', color='#16A085')
             self.canvas.axes.plot(self.df_test_all['target_date'], self.df_test_all['predict'], label='predict', color='#7D3C98')
             self.canvas.axes.plot(self.df_test['target_date'], self.df_test['target'], color='#16A085')
@@ -226,11 +224,18 @@ class TrainML(QWidget):
         current_model = self.select_model.currentText()
         experiment = 'model/machine_learning/experiment/'
         executing = 'model/machine_learning/executing/'
-        
-        model_file = f'{current_model}.h5'
-        val_date_file = f'{current_model}_val_date.pkl'
-        scaler_X = f'{current_model}_scaler_X.pkl'
-        scaler_y = f'{current_model}_scaler_y.pkl'
 
-        for file in [model_file, val_date_file, scaler_X, scaler_y]:
-            shutil.copyfile(os.path.join(experiment, file), os.path.join(executing, file))
+        selected_features = f'{current_model}_highest_corr_features.pkl'
+        scaler = f'{current_model}_scaler.pkl'
+        pca = f'{current_model}_pca.pkl'
+        model_file = f'{current_model}_regression.pkl'
+
+        if current_model == 'domestic':
+            paired_features = f'{current_model}_selected_paired_base_features.pkl'
+
+            for file in [selected_features, scaler, pca, model_file, paired_features]:
+                shutil.copyfile(os.path.join(experiment, file), os.path.join(executing, file))
+
+        else:
+            for file in [selected_features, scaler, pca, model_file]:
+                shutil.copyfile(os.path.join(experiment, file), os.path.join(executing, file))
