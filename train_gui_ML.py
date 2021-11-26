@@ -77,9 +77,12 @@ class TrainML(QWidget):
 
         try:
             self.df_test_all = pd.read_csv('output/domestic_ml_test_all.csv')
-            self.df_test = pd.read_csv('output/domestic_ml_test.csv')
+            df_test = pd.read_csv('output/domestic_ml_test.csv')
             self.df_test_all['target_date'] = pd.to_datetime(self.df_test_all['target_date'])
-            self.df_test['target_date'] = pd.to_datetime(self.df_test['target_date'])
+            df_test['target_date'] = pd.to_datetime(df_test['target_date'])
+            df_test = pd.DataFrame(df_test[['target_date', 'target', 'predict']]).dropna()
+            self.df_test = df_test
+
             self.canvas = MplCanvas(self, width=7, height=3, dpi=100)
             self.canvas.axes.plot(self.df_test_all['target_date'], self.df_test_all['target'], label='actual', color='#16A085')
             self.canvas.axes.plot(self.df_test_all['target_date'], self.df_test_all['predict'], label='predict', color='#7D3C98')
@@ -135,8 +138,8 @@ class TrainML(QWidget):
         self.param_split_pct.setText(new_params_dict['param_split_pct'])
         self.param_window.setText(new_params_dict['param_window'])
         self.param_threshold.setText(new_params_dict['param_threshold'])
-        self.param_std.setText(new_params_dict['self.param_std'])
-        self.param_var.setText(new_params_dict['self.param_var'])
+        self.param_std.setText(new_params_dict['param_std'])
+        self.param_var.setText(new_params_dict['param_var'])
 
     def sendConfig(self):
         parser = ConfigParser()
@@ -173,12 +176,16 @@ class TrainML(QWidget):
         try:
         
             self.df_test_all = pd.read_csv(f'output/{self.select_model.currentText()}_ml_test_all.csv')
-            self.df_test = pd.read_csv(f'output/{self.select_model.currentText()}_ml_test.csv')
+            df_test = pd.read_csv(f'output/{self.select_model.currentText()}_ml_test.csv')
+            
             
             self.canvas.axes.cla()
 
             self.df_test_all['target_date'] = pd.to_datetime(self.df_test_all['target_date'])
-            self.df_test['target_date'] = pd.to_datetime(self.df_test['target_date'])
+            df_test['target_date'] = pd.to_datetime(df_test['target_date'])
+            df_test = pd.DataFrame(df_test[['target_date', 'target', 'predict']]).dropna()
+            self.df_test = df_test
+            
             self.canvas = MplCanvas(self, width=7, height=3, dpi=100)
             self.canvas.axes.plot(self.df_test_all['target_date'], self.df_test_all['target'], label='actual', color='#16A085')
             self.canvas.axes.plot(self.df_test_all['target_date'], self.df_test_all['predict'], label='predict', color='#7D3C98')

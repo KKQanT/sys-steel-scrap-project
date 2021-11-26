@@ -182,6 +182,28 @@ class TrainSeq2Seq(QWidget):
         self.param_mlp_units.setText(new_params_dict['param_mlp_units'])
         self.param_mlp_dropout.setText(new_params_dict['param_mlp_dropout'])
 
+    def sendConfig(self):
+        parser = ConfigParser()
+        parser.read('src/deep_learning_seq2seq/model_config.ini')
+        current_model = self.select_model.currentText().upper()
+        parser.set(current_model, 'SEED', self.param_seed.text())
+        parser.set(current_model, 'WINDOW', self.param_window.text())
+        parser.set(current_model, 'DROPOUT', self.param_dropout.text())
+        parser.set(current_model, 'EPOCHS', self.param_epochs.text())
+
+        parser.set(current_model, 'N_UNITS', self.param_n_units.text())
+        parser.set(current_model, 'MIDDLE_DENSE_DIM', self.param_middle_dense_dim.text())
+
+        parser.set(current_model, 'HEAD_SIZE', self.param_head_size.text())
+        parser.set(current_model, 'NUM_HEADS', self.param_num_heads.text())
+        parser.set(current_model, 'FF_DIM', self.param_ff_dim.text())
+        parser.set(current_model, 'NUM_TRANSFORMER_HEADS', self.param_num_transformer_blocks.text())
+        parser.set(current_model, 'MLP_UNITS', self.param_mlp_units.text())
+        parser.set(current_model, 'MLP_DROPOUT', self.param_mlp_dropout.text())
+
+        with open("src/deep_learning_seq2seq/model_config.ini", 'w') as conf:
+            parser.write(conf)
+
     def trainModel(self):
 
         self.sendConfig()
