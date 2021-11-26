@@ -79,7 +79,8 @@ if __name__ == '__main__':
           num_transformer_blocks=NUM_TRANSFORMER_BLOCKS,
           mlp_units=MLP_UNITS,
           dropout=DROPOUT,
-          mlp_dropout=MLP_DROPOUT
+          mlp_dropout=MLP_DROPOUT,
+          output_seq=4
       )
 
     model.summary()

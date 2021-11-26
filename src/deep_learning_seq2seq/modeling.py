@@ -24,7 +24,7 @@ def transformerv1_encoder(inputs, head_size, num_heads, ff_dim, dropout=0):
 
 def build_transformerv1_model(input_shape, head_size, num_heads, ff_dim, 
                               num_transformer_blocks, mlp_units, dropout=0,
-                              mlp_dropout=0):
+                              mlp_dropout=0, output_seq=4):
   inputs = L.Input(shape=input_shape)
   x = inputs
   for _ in range(num_transformer_blocks):
@@ -36,7 +36,7 @@ def build_transformerv1_model(input_shape, head_size, num_heads, ff_dim,
     x = L.Dense(dim, activation='relu')(x)
     x = L.Dropout(mlp_dropout)(x)
   
-  outputs = L.Dense(4, activation='linear')(x)
+  outputs = L.Dense(output_seq, activation='linear')(x)
   return Model(inputs, outputs)
 
 def train_model(X_train, y_train, X_val, y_val, model, model_name, epochs, batch_size, save_path, save_best_only=False):
