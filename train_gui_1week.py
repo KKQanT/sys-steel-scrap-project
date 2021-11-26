@@ -250,8 +250,8 @@ class Train1Week(QWidget):
 
     def migrateModel(self):
         current_model = self.select_model.currentText()
-        experiment = 'model/deep_learning_1week/experiment/'
-        executing = 'model/deep_learning_1week/executing/'
+        experiment = 'model/deep_learning/experiment/'
+        executing = 'model/deep_learning/executing/'
         
         model_file = f'{current_model}.h5'
         val_date_file = f'{current_model}_val_date.pkl'
