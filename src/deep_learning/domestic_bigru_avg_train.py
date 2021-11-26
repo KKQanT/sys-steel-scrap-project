@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import mean_absolute_percentage_error
 import datetime as dt
-from deep_learning.taiwan_gru_baseline_avg_train import EPOCHS
 
 from validation import get_val_test_date, get_valid_target_date
 from util import make_weight_avg, windowlized

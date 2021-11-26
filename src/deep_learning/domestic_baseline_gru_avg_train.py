@@ -31,7 +31,7 @@ if __name__ == "__main__":
     config = configparser.ConfigParser()
     config.read('model_config.ini')
 
-    SPLIT_PCT = float(config[MODEL_NAME.upper()['split_pct']])
+    SPLIT_PCT = float(config[MODEL_NAME.upper()]['split_pct'])
     SEED = int(config[MODEL_NAME.upper()]['seed'])
     WINDOW = int(config[MODEL_NAME.upper()]['window'])
     N_UNITS = int(config[MODEL_NAME.upper()]['n_units'])
