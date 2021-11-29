@@ -200,16 +200,16 @@ class Train3Months(QWidget):
         migration_button = QPushButton("replace previous model")
         migration_button.clicked.connect(self.sendInferenceCConfig)
         migration_button.clicked.connect(self.migrateModel)
-        migration_button_layout = QVBoxLayout()
-        migration_button_layout.addWidget(migration_button)
+        
+        performance_layout.addWidget(migration_button)
 
         layout = QGridLayout()
         layout.addLayout(graph_layout, 0, 0)
-        layout.addLayout(performance_layout, 1, 0)
-        layout.addLayout(migration_button_layout, 2, 0)
-        layout.addLayout(select_model_layout, 0, 1)
-        layout.addLayout(param_layout, 1, 1)
-        layout.addLayout(train_layout, 2, 1)
+        layout.addLayout(performance_layout, 0, 1)
+        layout.addLayout(select_model_layout, 1, 0)
+        layout.addLayout(param_layout, 2, 0)
+        layout.addLayout(train_layout, 3, 0)
+
         self.setLayout(layout)
 
 
