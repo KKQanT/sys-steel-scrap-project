@@ -61,7 +61,7 @@ class Inference(QWidget):
         self.data_detail, _ = check_files()
 
         self.status = QLabel("files status")
-        self.file_status = QLabel("<br>".join([f"\n {k} : {v}" for (k,v) in self.data_detail.items()]))
+        self.file_status = QLabel("<br><br>".join([f"\n {k}: {v}" for (k,v) in self.data_detail.items()]))
         status_layout = QVBoxLayout()
         status_layout.addWidget(self.status)
         status_layout.addWidget(self.file_status)
@@ -78,6 +78,8 @@ class Inference(QWidget):
         layout.addLayout(check_file_button_layout, 1, 1)
 
         self.setLayout(layout)
+
+        self.setStyleSheet("QLabel {font: 10pt}")
 
     def onClickSelectAllButton(self):
         self.update_stooq_chkbox.setChecked(True)
