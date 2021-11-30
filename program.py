@@ -16,6 +16,10 @@ class TabWidget(QWidget):
         
         self.setWindowTitle('steel scrap prediction')
         self.setWindowIcon(QIcon('smc_logo.png'))
+        #self.setGeometry(250,150,400,700)
+        #self.resize(200, 500)
+        #self.move(QApplication.desktop().screen().rect().center()- self.rect().center())
+
         
         self.Inference = Inference()
         self.Train3Months = Train3Months()
@@ -29,6 +33,7 @@ class TabWidget(QWidget):
         Tab.addTab(self.Train1Week, 'Train1Week')
         Tab.addTab(self.TrainSeq2Seq, 'TrainSeq2Seq')
         Tab.addTab(self.TrainML, 'TrainML')
+        Tab.resize(300, 100)
 
         layout = QGridLayout()
         layout.addWidget(Tab)
