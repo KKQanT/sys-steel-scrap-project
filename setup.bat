@@ -6,5 +6,5 @@ echo install necessary python packages ...
 start /w install_venv.bat
 echo finished installation process
 echo writing model config...
-start /w initial_config.bat
+start /w reset_config.bat
 pause
