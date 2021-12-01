@@ -22,7 +22,7 @@ class MplCanvas(FigureCanvasQTAgg):
 
     def __init__(self, parent=None, width=10, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
+        self.axes = fig.add_subplot(111, )
         super(MplCanvas, self).__init__(fig)
 
 class Train3Months(QWidget):
@@ -166,7 +166,7 @@ class Train3Months(QWidget):
             self.df_test = pd.read_csv(f'output/{self.select_model.currentText()}_test.csv')
             self.df_val['target_date'] = pd.to_datetime(self.df_val['target_date'])
             self.df_test['target_date'] = pd.to_datetime(self.df_test['target_date'])
-            self.canvas = MplCanvas(self, width=5, height=3, dpi=100)
+            self.canvas = MplCanvas(self, width=5, height=10, dpi=100)
             self.canvas.axes.plot(self.df_val['target_date'], self.df_val['target'], label='actual', color='#16A085')
             self.canvas.axes.plot(self.df_val['target_date'], self.df_val['predict'], label='predict', color='#7D3C98')
             self.canvas.axes.plot(self.df_test['target_date'], self.df_test['target'], color='#16A085')
@@ -180,7 +180,7 @@ class Train3Months(QWidget):
             self.test_mape_text = QLabel(f"test set MAPE : {test_mape}")
 
         except FileNotFoundError:
-            self.canvas = MplCanvas(self, width=5, height=3, dpi=100)
+            self.canvas = MplCanvas(self, width=10, height=5, dpi=100)
 
             self.val_mape_text = QLabel(f"validatation set MAPE : ")
             self.test_mape_text = QLabel(f"test set MAPE : ")
@@ -200,16 +200,16 @@ class Train3Months(QWidget):
         migration_button = QPushButton("replace previous model")
         migration_button.clicked.connect(self.sendInferenceCConfig)
         migration_button.clicked.connect(self.migrateModel)
-        migration_button_layout = QVBoxLayout()
-        migration_button_layout.addWidget(migration_button)
+        
+        performance_layout.addWidget(migration_button)
 
         layout = QGridLayout()
         layout.addLayout(graph_layout, 0, 0)
-        layout.addLayout(performance_layout, 1, 0)
-        layout.addLayout(migration_button_layout, 2, 0)
-        layout.addLayout(select_model_layout, 0, 1)
-        layout.addLayout(param_layout, 1, 1)
-        layout.addLayout(train_layout, 2, 1)
+        layout.addLayout(performance_layout, 0, 1)
+        layout.addLayout(select_model_layout, 1, 0)
+        layout.addLayout(param_layout, 2, 0)
+        layout.addLayout(train_layout, 3, 0)
+
         self.setLayout(layout)
 
 

@@ -61,7 +61,7 @@ class Inference(QWidget):
         self.data_detail, _ = check_files()
 
         self.status = QLabel("files status")
-        self.file_status = QLabel("<br>".join([f"\n {k} : {v}" for (k,v) in self.data_detail.items()]))
+        self.file_status = QLabel("<br><br>".join([f"\n  ● {k} : {v}" for (k,v) in self.data_detail.items()]))
         status_layout = QVBoxLayout()
         status_layout.addWidget(self.status)
         status_layout.addWidget(self.file_status)
@@ -70,14 +70,17 @@ class Inference(QWidget):
         self.checkFilesButton.clicked.connect(self.onClickCheckFiles)
         check_file_button_layout = QHBoxLayout()
         check_file_button_layout.addWidget(self.checkFilesButton)
+        
 
         layout = QGridLayout()
         layout.addLayout(chckbox_layout, 0, 0)
         layout.addLayout(status_layout, 0, 1)
         layout.addLayout(button_layout, 1, 0)
-        layout.addLayout(check_file_button_layout, 1, 1)
+        layout.addLayout(check_file_button_layout, 1, 1,)
 
         self.setLayout(layout)
+
+        self.setStyleSheet("QLabel {font: 10pt} QCheckBox {font: 10pt}")
 
     def onClickSelectAllButton(self):
         self.update_stooq_chkbox.setChecked(True)
@@ -115,7 +118,7 @@ class Inference(QWidget):
                     process = subprocess.Popen(['yahoo_downloading.bat'])
                     process.communicate()
 
-            self.file_status.setText("<br>".join([f"\n {k} : {v}" for (k,v) in self.data_detail.items()]))
+            self.file_status.setText("<br><br>".join([f"\n  ● {k} : {v}" for (k,v) in self.data_detail.items()]))
 
         if self.inference_ml.isChecked() or self.inference_dl_3month.isChecked() or self.inference_dl_1week.isChecked() or self.inference_dl_seq2seq.isChecked():
             process = subprocess.Popen(['preprocessing.bat'])
@@ -143,7 +146,7 @@ class Inference(QWidget):
 
     def onClickCheckFiles(self):
         self.data_detail, _ = check_files()
-        self.file_status.setText("<br>".join([f"\n {k} : {v}" for (k,v) in self.data_detail.items()]))
+        self.file_status.setText("<br><br>".join([f"\n  ● {k} : {v}" for (k,v) in self.data_detail.items()]))
 
 def check_files():
 

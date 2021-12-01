@@ -2,7 +2,12 @@ import pandas as pd
 import datetime as dt
 
 if __name__ == "__main__":
+
     SAVE_PREDICTION_PATH = '../../output/'
+
+    df_exchange = pd.read_excel('../../data/sys/Weekly scrap Price.xlsx').rename(columns = {'Date':'date'})
+    df_exchange = pd.DataFrame(df_exchange[['date', 'F/X.1']])
+    df_exchange['date'] = pd.to_datetime(df_exchange['date'])
 
     df_main_ML = pd.read_csv(SAVE_PREDICTION_PATH + 'd_ML.csv')
     df_main_ML['date'] = pd.to_datetime(df_main_ML['date'])
@@ -10,6 +15,12 @@ if __name__ == "__main__":
 
     df = pd.read_csv(SAVE_PREDICTION_PATH + 't_ML.csv').drop(columns =['target_date'])
     df['date'] = pd.to_datetime(df['date'])
+
+    df = pd.merge(df, df_exchange, on = ['date'], how='left')
+    df['F/X.1'] = df['F/X.1'].fillna(method = 'ffill')
+    df['t_ML_month3_baht'] = df['t_ML_month3']*df['F/X.1'] + 900
+    df['t_ML_month3_pred_baht'] = df['t_ML_month3_pred']*df['F/X.1'] + 900
+
     df_main_ML = pd.merge(df_main_ML, df, on = ['date'], how='left')
 
     df_main_DL = pd.read_csv(SAVE_PREDICTION_PATH + 'd_DL1_month3.csv')
@@ -27,18 +38,21 @@ if __name__ == "__main__":
     df = pd.read_csv(SAVE_PREDICTION_PATH + 't_DL1_month3.csv')
     df['date'] = pd.to_datetime(df['date'])
 
-    df_exchange = pd.read_excel('../../data/sys/Weekly scrap Price.xlsx').rename(columns = {'Date':'date'})
-    df_exchange = pd.DataFrame(df_exchange[['date', 'F/X.1']])
-    df_exchange['date'] = pd.to_datetime(df_exchange['date'])
-
     df = pd.merge(df, df_exchange, on = ['date'], how='left')
     df['F/X.1'] = df['F/X.1'].fillna(method = 'ffill')
     df['t_DL1_month3_baht'] = df['t_DL1_month3']*df['F/X.1'] + 900
     df['t_DL1_month3_pred_baht'] = df['t_DL1_month3_pred']*df['F/X.1'] + 900
+
     df_main_DL = pd.merge(df_main_DL, df, on = ['date'], how='left')
 
     df = pd.read_csv(SAVE_PREDICTION_PATH + 't_DL2_month3.csv')
     df['date'] = pd.to_datetime(df['date'])
+
+    df = pd.merge(df, df_exchange, on = ['date'], how='left')
+    df['F/X.1'] = df['F/X.1'].fillna(method = 'ffill')
+    df['t_DL2_month3_baht'] = df['t_DL2_month3']*df['F/X.1'] + 900
+    df['t_DL2_month3_pred_baht'] = df['t_DL2_month3_pred']*df['F/X.1'] + 900
+
     df_main_DL = pd.merge(df_main_DL, df, on = ['date'], how='left')
 
     df_main_DL_filled = pd.DataFrame()
@@ -52,13 +66,14 @@ if __name__ == "__main__":
         'd_DL3_month3_pred',
         't_DL1_month3_pred',
         't_DL2_month3_pred',
-        't_DL1_month3_pred_baht'
+        't_DL1_month3_pred_baht',
+        't_DL2_month3_pred_baht',
         
     ]:
         df_main_DL_filled[col] = df_main_DL_filled[col].fillna(method='ffill')
 
     df_main = pd.merge(df_main_ML, df_main_DL_filled, on = ['date', 'target_date'], how='left')
-    
+
     df_price = pd.read_excel('../../data/sys/Data Price.xlsx')
     df_price['Date'] = pd.to_datetime(df_price['Date'])
 
