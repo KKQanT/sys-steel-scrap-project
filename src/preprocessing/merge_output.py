@@ -156,6 +156,9 @@ if __name__ == "__main__":
     df_extend_filled = pd.melt(df_extend_filled, id_vars=['date', 'target_date'])
     df_extend_filled['variable'] = 'd_DL1_week1_to_week4_pred'
 
+    df_dummy = df_main[df_main['variable'] == 'd_DL1_week1_to_week4_pred'].dropna()
+    df_extend_filled = df_extend_filled[df_extend_filled['target_date'].isin(df_dummy['target_date']) == False]
+
     df_main = df_main.append(df_extend_filled, ignore_index=True)
 
     df_extend = pd.read_csv(SAVE_PREDICTION_PATH + 'd_DL1_week1_to_12_extended.csv')
@@ -174,6 +177,9 @@ if __name__ == "__main__":
 
     df_extend_filled = pd.melt(df_extend_filled, id_vars=['date', 'target_date'])
     df_extend_filled['variable'] = 'd_DL1_week1_to_month3_pred'
+
+    df_dummy = df_main[df_main['variable'] == 'd_DL1_week1_to_month3_pred'].dropna()
+    df_extend_filled = df_extend_filled[df_extend_filled['target_date'].isin(df_dummy['target_date']) == False]
 
     df_main = df_main.append(df_extend_filled, ignore_index=True)
 
@@ -219,7 +225,5 @@ if __name__ == "__main__":
     df_result = pd.read_csv(SAVE_PREDICTION_PATH + 'test_result.csv')
 
     df_main = pd.merge(df_main, df_result, on = ['model'], how='left')
-
-    df_main = df_main.drop_duplicates(subset=['target_date', 'variable'], keep='first')
 
     df_main.to_csv(SAVE_PREDICTION_PATH + 'all_prediction_current.csv', index=False)
