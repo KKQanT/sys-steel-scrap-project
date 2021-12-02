@@ -20,7 +20,7 @@ if __name__ == "__main__":
     BASE_FEATURES = ['adjusted_avg_factors']
     #WINDOW = 168
     SAVE_PREDICTION_PATH = '../../output/'
-    PLOT = True
+    PLOT = False
 
     config = ConfigParser()
     config.read('infer_model_config.ini')

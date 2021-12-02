@@ -15,7 +15,7 @@ if __name__ == '__main__':
     SAVE_MODEL_PATH = '../../model/deep_learning/executing/'
     #WINDOW = 168
     SAVE_PREDICTION_PATH = '../../output/'
-    PLOT = True
+    PLOT = False
 
     with open(SAVE_MODEL_PATH + f'{MODEL_NAME}_val_date.pkl', 'r') as val_date_file:
         val_date = dt.datetime.strptime(val_date_file.read(), "%d-%b-%Y (%H:%M:%S.%f)")

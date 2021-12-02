@@ -18,7 +18,7 @@ if __name__ == "__main__":
     #WINDOW = 84
     SAVE_MODEL_PATH = '../../model/deep_learning/executing/'
     SAVE_PREDICTION_PATH = '../../output/'
-    PLOT = True
+    PLOT = False
 
     config = ConfigParser()
     config.read('infer_model_config.ini')
