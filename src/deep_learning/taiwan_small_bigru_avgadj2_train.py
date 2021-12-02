@@ -120,4 +120,4 @@ if __name__ == "__main__":
     #plt.savefig('../../output/output.png')
 
     df_val.to_csv('../../output/taiwan_small_bigru_avgadj2_val.csv', index=False)
-    df_test.to_csv('../../output/taiwan_small_bigru_avgadj2_test', index=False)
+    df_test.to_csv('../../output/taiwan_small_bigru_avgadj2_test.csv', index=False)
