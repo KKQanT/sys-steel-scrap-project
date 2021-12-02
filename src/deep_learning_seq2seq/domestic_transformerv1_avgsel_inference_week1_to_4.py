@@ -1,6 +1,6 @@
 import pandas as pd
 import datetime as dt
-from util import preprocess_target, make_weight_avg, window_sliding_X
+from util import preprocess_target, make_weight_avg, window_sliding_X, TargetMinMaxScaler
 import pickle
 import matplotlib
 import matplotlib.pyplot as plt
