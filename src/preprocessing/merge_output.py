@@ -220,4 +220,6 @@ if __name__ == "__main__":
 
     df_main = pd.merge(df_main, df_result, on = ['model'], how='left')
 
-    df_main.to_csv(SAVE_PREDICTION_PATH + 'all_prediction.csv', index=False)
+    df_main = df_main.drop_duplicates(subset=['target_date', 'variable'], keep='first')
+
+    df_main.to_csv(SAVE_PREDICTION_PATH + 'all_prediction_current.csv', index=False)
