@@ -1,2 +1,2 @@
-cmd /k "cd venv/Scripts & activate & cd ../../ & python program.py"
+cmd /k "python program.py"
 pause
