@@ -43,6 +43,8 @@ def cleanedFloat(x):
   except ValueError:
     #print(x)
     return float(x.split(',')[0])
+  except AttributeError:
+    return float(x)
 
 def preprocess_daily_price(daily_price_path, daily_temp_path, df_main):
 
